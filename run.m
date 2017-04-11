@@ -8,8 +8,11 @@ is_concav = 1;
 
 obj_name = 'plane_sphere';
 idir = '../plane_sphere/tex_spec';
+alg_type = 'mvs';
 
+switch alg_type
 %% Run MVS
+case 'mvs'
 for i = 2 : 3 : 8
     for j = 1 : 10
         dir = sprintf('%s/%02d%02d/mvs_vh', idir, i, j);
@@ -24,6 +27,7 @@ for i = 2 : 3 : 8
 end
 
 %% Run SL
+case 'sl'
 addpath C:/Users/Daniela/Documents/3D_Recon/kwStructuredLight
 objDir = sprintf('%s/%02d%02d/mvs_vh', idir, i, j);
 for i = 2 : 3 : 8
@@ -35,9 +39,11 @@ for i = 2 : 3 : 8
 end
 
 %% Run PS
+case 'ps'
 addpath 
 
 %% Run VH
+case 'vh'
 addpath C:/Users/Daniela/Documents/3D_Recon/Visual Hull Matlab;
 for i = 2 : 3 : 8
     for j = 1 : 10
@@ -47,3 +53,5 @@ for i = 2 : 3 : 8
         evaluate;
     end
 end
+
+end % end of switch statement

@@ -3,3 +3,7 @@
 `evaluate.mat`: compute the accuracy and completeness of the reconstruction
 
 `evaluate_mvs.mat` and `evaluate_sl.mat` are currently not used
+
+`gen_norms.mat`: generate uniformly distributed samples on a sphere
+
+
