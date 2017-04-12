@@ -7,21 +7,26 @@ is_rough = 1;
 is_concav = 1;
 
 obj_name = 'plane_sphere';
-idir = '../plane_sphere/tex_spec';
 alg_type = 'mvs';
+idir = ['../plane_sphere/tex_spec/', alg_type];
+gt_dir = '../groundtruth';
 
 switch alg_type
 %% Run MVS
 case 'mvs'
-for i = 2 : 3 : 8
-    for j = 1 : 10
-        dir = sprintf('%s/%02d%02d/mvs_vh', idir, i, j);
+for ind_tex = 2 : 3 : 8
+    for ind_spec = 2 : 3 : 8
+        dir = sprintf('%s/%02d%02d', idir, ind_tex, ind_spec);
         copyfile('../copy2mvs', dir);
-        cmd = sprintf('pmvs2 %s/ option', dir);
-        eval(cmd);
+        foption = [obj_name, '_', alg_type];
+        movefile([dir, '/option'], [dir, '/', foption]);
+        cmd = sprintf('pmvs2 %s/ %s', dir, foption);
+        if ~exist([dir, '/models/', obj_name, '_', alg_type, '.ply'], 'file')
+            system(cmd);
+        end
         evaluate;
         rmdir(sprintf('%s/txt/', dir), 's');
-        delete(sprintf('%s/option', dir));
+        delete(sprintf('%s/%s', dir, foption));
         delete(sprintf('%s/vis.dat', dir));
     end
 end
@@ -29,7 +34,7 @@ end
 %% Run SL
 case 'sl'
 addpath C:/Users/Daniela/Documents/3D_Recon/kwStructuredLight
-objDir = sprintf('%s/%02d%02d/mvs_vh', idir, i, j);
+objDir = sprintf('%s/%02d%02d/', idir, i, j);
 for i = 2 : 3 : 8
     for j = 1 : 10
         % change objName
