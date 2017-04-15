@@ -28,28 +28,30 @@ samp_sphere = rad * gen_norms(40000, [0, 0, 1]', 180)'; % 0.5 between angle
 samp_plane = [X(:), Y(:), zeros(numel(X), 1)];
 d2sphere = sum(samp_plane.^2, 2);
 samp_plane = samp_plane(d2sphere >= rad^2, :);
-nsamps = size(samp_sphere, 1) + size(samp_plane, 1);
+samp = [samp_sphere; samp_plane];
 
 % find the closes vertex in the reconstructed model
 d_thre = 0.01; % reasonable?
 csamp = 0;
-% nsamp = size(samp, 1);
-for i = 1 : size(samp_sphere, 1)
-    p = samp_sphere(i, :);
+nsamp = size(samp, 1);
+for i = 1 : nsamp
+    p = samp(i, :);
     d = sqrt(min(sum((repmat(p, nverts, 1) - verts').^2, 2)));
     if d <= d_thre
         csamp = csamp + 1;
     end
 end
+completeness = csamp / nsamp;
 
-for i = 1 : size(samp_plane, 1)
-    p = samp_plane(i, :);
-    d = min(abs(p(3) - verts(3, :)'));
-    if d <= d_thre
-        csamp = csamp + 1;
-    end
-end
-completeness = csamp / nsamps;
+% csamp = 0;
+% for i = 1 : size(samp_plane, 1)
+%     p = samp_plane(i, :);
+%     d = min(abs(p(3) - verts(3, :)'));
+%     if d <= d_thre
+%         csamp = csamp + 1;
+%     end
+% end
+% completeness(2) = csamp / size(samp_plane, 1);
 fprintf('completeness: %.08f\n', completeness);
 
 fid = fopen([dir, '/result.txt'], 'wt');
