@@ -9,6 +9,7 @@ switch alg_type
         verts(:, id_rm) = [];
     case 'vh'
         [verts, ~] = ply_read_vf(sprintf('%s/%s_vh.ply', dir, obj_name));
+        
 end
 nverts = size(verts, 2);
 
@@ -46,7 +47,5 @@ switch alg_type
         fid = fopen([dir, '/result.txt'], 'wt');
     case 'sl'
         fid = fopen([objDir, '/result.txt'], 'wt');
-    case 'vh'
-        fid = fopen([dir, '/result.txt'], 'wt');
 end
 fprintf(fid, 'accuracy: %.08f\ncompleteness: %.08f\n', accuracy, completeness);
