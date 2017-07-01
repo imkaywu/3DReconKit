@@ -1,7 +1,7 @@
 addpath(genpath('C:\Users\Admin\Documents\3D_Recon\Photometric Stereo'));
 mask = imread(sprintf('%s/gt/mask.bmp', data.rdir));
 mask(mask > 0) = 1;
-norm_map_rgb_gt = imread(sprintf('%s/gt/normal.png', data.rdir));
+norm_map_rgb_gt = imread(sprintf('%s/gt/ps.png', data.rdir));
 norm_map_gt = decode(norm_map_rgb_gt, mask);
 % show_surfNorm(255 * mask, norm_map_gt, 10);
 

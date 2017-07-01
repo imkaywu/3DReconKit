@@ -1,8 +1,33 @@
-%% compute accuracy
-% [verts_gt, norms_gt, faces_gt] = ply_read_vnf(sprintf('%s/gt/%s_gt.ply', rdir, obj_name));
-x_lim = [-1.52, 1.52];
-y_lim = [-1.52, 1.52];
-z_lim = [-0.02, 1.52];
+%% compute accuracy and completeness
+d_tor = 0.02;
+% read gt
+if strcmp(obj_name, 'sphere')
+    rad = 1.5;
+    c = [0, 0, 0]';
+    verts_gt = rad * gen_norms(80000, [0, 0, 1]', 180); % 0.5 between angle
+    verts_gt(3, :) = verts_gt(3, :) + c(3);
+    x_lim = [min(verts_gt(1, :)) - d_tor, max(verts_gt(1, :)) + d_tor];
+    y_lim = [min(verts_gt(2, :)) - d_tor, max(verts_gt(2, :)) + d_tor];
+    z_lim = [min(verts_gt(3, :)) - d_tor, max(verts_gt(3, :)) + d_tor];
+else
+
+switch algs{aa}
+    case 'mvs'
+        [verts_gt, ~, ~] = ply_read_vnf(sprintf('%s/gt/mvs.ply', rdir));
+    case 'sl'
+        [verts_gt, ~, ~] = ply_read_vnf(sprintf('%s/gt/sl.ply', rdir));
+end
+ind_rm = verts_gt(3, :) < 0;
+verts_gt(:, ind_rm) = [];
+x_lim = [min(verts_gt(1, :)) - d_tor, max(verts_gt(1, :)) + d_tor];
+y_lim = [min(verts_gt(2, :)) - d_tor, max(verts_gt(2, :)) + d_tor];
+z_lim = [min(verts_gt(3, :)) - d_tor, max(verts_gt(3, :)) + d_tor];
+dsample = 5;
+verts_gt = verts_gt(:, 1 : dsample : size(verts_gt, 2));
+end
+nverts_gt = size(verts_gt, 2);
+
+% read recon
 switch algs{aa}
     case 'mvs'
         [verts, ~, ~] = ply_read_vnc(sprintf('%s/models/%s_%s.ply', dir, obj_name, algs{aa}));
@@ -10,56 +35,52 @@ switch algs{aa}
                     | verts(2, :) < y_lim(1) | verts(2, :) > y_lim(2)...
                     | verts(3, :) < z_lim(1) | verts(3, :) > z_lim(2));
         verts(:, ind_rm) = [];
+        d_thre = 0.015;
     case 'sl'
-        [verts, ~] = ply_read_vc(sprintf('%s/%s_%s.ply', objDir, obj_name, alg_type));
+        load C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/groundtruth/calib_results/calib_cam_proj.mat Rc_1_cam Tc_1_cam
+        [verts, ~] = ply_read_vc(sprintf('%s/%s_%s.ply', objDir, objName, algs{aa}));
+%         verts = Rc_1_cam{1}' * (verts - repmat(Tc_1_cam{1}, 1, size(verts, 2)));
         ind_rm = find(verts(1, :) < x_lim(1) | verts(1, :) > x_lim(2)...
                     | verts(2, :) < y_lim(1) | verts(2, :) > y_lim(2)...
                     | verts(3, :) < z_lim(1) | verts(3, :) > z_lim(2));
         verts(:, ind_rm) = [];
         dsample = 10;
         verts = verts(:, 1 : dsample : size(verts, 2));
+        d_thre = 0.03;
     case 'vh'
         [verts, ~] = ply_read_vf(sprintf('%s/%s_vh.ply', dir, obj_name));
 end
 nverts = size(verts, 2);
 
-% groundtruth: sphere center and radius
-c = [0, 0, 0]';
-rad = 1.5;
-
+subplot(1,2,1); plot3(verts(1, :), verts(2, :), verts(3, :), 'k.'); hold on; plot3(verts_gt(1, :), verts_gt(2, :), verts_gt(3, :), 'r.'); axis equal; hold off;
+%% compute accuracy and completeness
+dist = zeros(nverts, 1);
+for n = 1 : nverts
+    p = verts(:, n);
+    d = pdist2(p', verts_gt', 'euclidean');
+    dist(n) = min(d);
+end
 prct = 0.9;
-dist = abs(sqrt(sum((verts-repmat(c, 1, nverts)).^2, 1)) - rad)';
 sorted_dist = sort(dist);
 accuracy = sorted_dist(round(prct * nverts));
 fprintf('accuracy(%.1f): %.8f\n', prct, accuracy);
 
-%% compute completeness
-% sample the sphere
-samp_sphere = rad * gen_norms(40000, [0, 0, 1]', 180); % 0.5 between angle
-samp_sphere(3, :) = samp_sphere(3, :) + c(3);
-
-% find the closes vertex in the reconstructed model
-switch alg_type
-case 'mvs'
-    d_thre = 0.012; % reasonable?
-case 'sl'
-    d_thre = 0.015;
-end
-csamp = 0;
-nsamp = size(samp_sphere, 2);
-% dist = slmetric_pw(samp_sphere, verts, 'mineucdiff');
-% csamp = sum(dist <= d_thre);
-for i = 1 : nsamp
-    p = samp_sphere(:, i);
-    d = sqrt(min(sum((repmat(p, 1, nverts) - verts).^2, 1)));
-    if d <= d_thre
-        csamp = csamp + 1;
+count = 0;
+ind = [];
+for n = 1 : nverts_gt
+    p = verts_gt(:, n);
+    d = pdist2(p', verts', 'euclidean');
+    count = count + (min(d) <= d_thre);
+    if (min(d) <= d_thre)
+        ind = [ind, n];
     end
 end
-completeness = csamp / nsamp;
+completeness = count / nverts_gt;
 fprintf('completeness(%.4f): %.08f\n', d_thre, completeness);
 
-switch alg_type
+subplot(1, 2, 2); plot3(verts(1, :), verts(2, :), verts(3, :), 'k.'); hold on;plot3(verts_gt(1, ind), verts_gt(2, ind), verts_gt(3, ind), 'r.'); axis equal; hold off;
+%% write to file
+switch algs{aa}
     case 'mvs'
         fid = fopen([dir, '/result.txt'], 'wt');
     case 'sl'

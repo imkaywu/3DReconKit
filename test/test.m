@@ -4,15 +4,16 @@ clear, clc, close all;
 addpath('../io');
 addpath(genpath('../include'));
 
-obj_names = {'cup', 'vase', 'pot'};
+obj_names = {'knight'};
 algs = {'ps', 'mvs', 'sl'};
 props = {'tex', 'alb', 'spec', 'rough'}; 
 % alg_prop = logical([1, 1, 1, 0; 0, 1, 1, 1; 1, 0, 1, 1]); % order: mvs, ps, sl
-val_prop = [2, 2, 2, 5; 2, 2, 8, 2; 2, 8, 2, 5; 8, 2, 2, 5];
+val_prop = [2, 8, 2, 8; 2, 8, 5, 2; 8, 8, 2, 8; 8, 8, 5, 2];
 ref_dir = '../../ref_obj';
 gt_dir = '../../groundtruth';
-run_alg = 1;
+run_alg = 0;
 run_eval = 1;
+run_eval_ps = 0;
 
 for oo = 1 : numel(obj_names)
 
@@ -20,7 +21,7 @@ for aa = 1 : numel(algs)
 
 for pp = 1 : size(val_prop, 1)
 
-rdir = sprintf('C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/%s', obj_names{oo});
+rdir = sprintf('C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/testing/%s', obj_names{oo});
 
 switch algs{aa}
 %% Run MVS
@@ -36,7 +37,7 @@ if run_alg || ~exist([dir, '/models/', obj_names{oo}, '_', algs{aa}, '.ply'], 'f
     cd ../include, system(cmd), cd ../test;
 end
 if(run_eval || ~exist(sprintf('%s/result.txt', dir), 'file'))
-    eval_acc_cmplt_2;
+    eval_acc_cmplt;
 end
 rmdir(sprintf('%s/txt/', dir), 's');
 delete(sprintf('%s/%s', dir, foption));
@@ -47,7 +48,7 @@ case 'sl'
 dir_sl = 'C:/Users/Admin/Documents/3D_Recon/kwStructuredLight';
 addpath (genpath(dir_sl));
 % change objName
-objDir = sprintf('%s/sl_1024x768/%02d%02d%02d%02d', rdir, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4)); % used in slProcess_syn
+objDir = sprintf('%s/sl/%02d%02d%02d%02d', rdir, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4)); % used in slProcess_syn
 objName = obj_names{oo};
 obj_name = objName;
 alg_type = algs{aa};
@@ -56,7 +57,7 @@ if(run_alg || ~exist(sprintf('%s/%s_sl.ply', objDir, obj_names{oo}), 'file'))
     slProcess_syn;
 end
 if(run_eval || ~exist(sprintf('%s/result.txt', objDir), 'file'))
-    eval_acc_cmplt_2;
+    eval_acc_cmplt;
 end
 
 %% Run PS
@@ -71,7 +72,7 @@ wait_for_existence(sprintf('%s/0023.jpg', data.dir), 'file', 10, 3600);
 if(run_alg || ~exist(sprintf('%s/normal.png', data.dir), 'file'))
     main_ps;
 end
-if(run_eval || ~exist(sprintf('%s/result.txt', data.dir), 'file'))
+if(run_eval_ps || ~exist(sprintf('%s/result.txt', data.dir), 'file'))
     eval_angle;
 end
 

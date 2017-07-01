@@ -5,13 +5,14 @@ addpath('../io');
 addpath(genpath('../include'));
 
 obj_name = 'sphere';
-algs = {'mvs', 'ps', 'sl'};
+algs = {'ps', 'mvs', 'sl'};
 props = {'tex', 'alb', 'spec', 'rough'};
 rdir = sprintf('C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/%s', obj_name);
 ref_dir = '../../ref_obj';
 gt_dir = '../../groundtruth';
 run_alg = 0;
 run_eval = 0;
+run_eval_ps = 0;
 
 for aa = 1 : numel(algs)
 
@@ -39,7 +40,7 @@ for ind_1 = 2 : 3 : 8
             cd ../include, system(cmd), cd ../pairwise;
         end
         if(run_eval || ~exist(sprintf('%s/result.txt', dir), 'file'))
-            eval_acc_cmplt_2;
+            eval_acc_cmplt;
         end
         rmdir(sprintf('%s/txt/', dir), 's');
         delete(sprintf('%s/%s', dir, foption));
@@ -60,7 +61,7 @@ for ind_1 = 2 : 3 : 8
             slProcess_syn;
         end
         if(run_eval || ~exist(sprintf('%s/result.txt', objDir), 'file'))
-            eval_acc_cmplt_2;
+            eval_acc_cmplt;
         end
     end
 end
@@ -75,11 +76,11 @@ for ind_1 = 2 : 3 : 8
         data.rdir = rdir;
         data.ref_dir = ref_dir;
         data.obj_name = obj_name;
-        wait_for_existence(sprintf('%s/0023.jpg', data.dir), 'file', 10, 3600);
+        wait_for_existence(sprintf('%s/0024.jpg', data.dir), 'file', 10, 3600);
         if(run_alg || ~exist(sprintf('%s/normal.png', data.dir), 'file'))
             main_ps;
         end
-        if(run_eval || ~exist(sprintf('%s/result.txt', data.dir), 'file'))
+        if(run_eval_ps || ~exist(sprintf('%s/result.txt', data.dir), 'file'))
             eval_angle;
         end
     end

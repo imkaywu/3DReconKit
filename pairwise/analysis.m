@@ -3,7 +3,7 @@ clear, clc, close all;
 addpath(genpath('../include'));
 
 obj_name = 'sphere';
-algs = {'mvs', 'ps', 'sl'};
+algs = {'ps', 'mvs', 'sl'};
 props = {'tex', 'alb', 'spec', 'rough'};
 rdir = sprintf('C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/%s', obj_name);
 ref_dir = '../../ref_obj';
@@ -14,13 +14,13 @@ acc_mat = zeros(3, 3);
 cmplt_mat = zeros(3, 3);
 angle_mat = [];
 
-for aa = 1
+for aa = 1 : numel(algs)
 
 idir = sprintf('%s/%s', rdir, algs{aa});
 
-for ii = 1
+for ii = 1 : numel(props)
     
-for jj = 3
+for jj = ii + 1 : numel(props)
 
 prop_pair = sprintf('%s_%s', props{ii}, props{jj});
 
@@ -130,10 +130,10 @@ case {'mvs', 'sl', 'vh'}
            sprintf('completeness %s: %.02f', props{jj}, ind(2)/10),...
            sprintf('completeness %s: %.02f', props{jj}, ind(3)/10),...
            'Location', 'west');
-    xlabel(props{ii});
-    ylabel('accuracy/completeness');
+    xlabel(props{ii}, 'FontSize', 24);
+    ylabel('accuracy/completeness', 'FontSize', 24);
     xlim([0, 1]);
-    title(sprintf('%s: %s and %s', algs{aa}, props{ii}, props{jj}));
+    title(sprintf('%s: %s and %s', algs{aa}, props{ii}, props{jj}), 'FontSize', 24, 'FontWeight', 'bold');
     if(~exist(sprintf('%s/result', rdir), 'dir'))
         mkdir(sprintf('%s/result', rdir));
     end
@@ -149,9 +149,9 @@ case 'ps'
     angle_plot(:, :, 2) = angle_mat(:, 4 : 6)';
     angle_plot(:, :, 3) = angle_mat(:, 7 : 9)';
     aboxplot(angle_plot, 'labels', [0.2 0.5, 0.8]);
-    xlabel(props{ii});
-    ylabel('angle difference');
-    title(sprintf('%s: %s and %s', algs{aa}, props{ii}, props{jj}));
+    xlabel(props{ii}, 'FontSize', 24);
+    ylabel('angle difference', 'FontSize', 24);
+    title(sprintf('%s: %s and %s', algs{aa}, props{ii}, props{jj}), 'FontSize', 24, 'FontWeight', 'bold');
     legend(sprintf('%s: %.02f', props{jj}, ind(1)/10), ...
            sprintf('%s: %.02f', props{jj}, ind(2)/10), ...
            sprintf('%s: %.02f', props{jj}, ind(3)/10), ...
