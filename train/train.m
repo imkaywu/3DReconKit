@@ -5,14 +5,14 @@ addpath('../io');
 addpath(genpath('../include/'));
 
 obj_name = 'sphere';
-algs = {'ps', 'mvs', 'sl'};
+algs = {'mvs'};
 props = {'tex', 'alb', 'spec', 'rough', 'concav'};
-alg_prop = logical([0, 1, 1, 1, 0; 1, 0, 1, 1, 0; 0, 1, 1, 1, 0]);
+alg_prop = logical([0, 1, 1, 1, 0; 1, 1, 1, 0, 0; 0, 1, 1, 1, 0]);
 rdir = sprintf('C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/%s', obj_name);
 ref_dir = '../../ref_obj';
 gt_dir = '../../groundtruth';
 run_alg = 0;
-run_eval = 1;
+run_eval = 0;
 run_eval_ps = 0;
 
 for aa = 1 : numel(algs)
@@ -27,7 +27,7 @@ case 'mvs'
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         for ind_3 = 2 : 3 : 8
-        dir = sprintf('%s/%02d00%02d%02d', idir, ind_1, ind_2, ind_3);
+        dir = sprintf('%s/%02d%02d%02d00', idir, ind_1, ind_2, ind_3);
         copyfile('../../copy2mvs', dir);
         foption = sprintf('%s_%s', obj_name, algs{aa});
         movefile([dir, '/option'], [dir, '/', foption]);

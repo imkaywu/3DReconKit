@@ -16,7 +16,7 @@
 % Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 %
 
-function aboxplot(X,varargin)
+function p=aboxplot(X,varargin)
 
 % Parameters
 widthl = 0.7;
@@ -197,7 +197,7 @@ for j=1:d
         
         % Plot mean
         hold on;
-        plot(i-widthl/2+(2*j-1)*widthl/(2*d), u,...
+        p(j)=plot(i-widthl/2+(2*j-1)*widthl/(2*d), u,...
             'LineStyle','none',...
             'Marker','o',...
             'MarkerEdgeColor','k',...
