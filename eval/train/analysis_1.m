@@ -1,7 +1,7 @@
 % performance of each technique under all properties and the combinations
 % graphs are separated in different plots
 clear, clc, close all;
-addpath(genpath('../include/'));
+addpath(genpath('../../'));
 
 obj_name = 'sphere';
 props = {'tex', 'alb', 'spec', 'rough', 'concav'};
@@ -12,6 +12,7 @@ ref_dir = sprintf('%s/ref_obj', pdir);
 gt_dir = sprintf('%s/groundtruth', pdir);
 ind = 2 : 3 : 8;
 
+cmplt_prct = 0.5;
 mvs_acc_mat = zeros(3, 3, 3);
 mvs_cmplt_mat = zeros(3, 3, 3);
 sl_acc_mat = zeros(3, 3, 3);
@@ -43,6 +44,12 @@ for kk = 1 : numel(ind)
     eval_angle;
     angle_cell{ii, jj, kk} = angle;
     clear norm_map
+    
+    % sc
+    dir = sprintf('%s/train/sc', rdir);
+    fid = fopen(sprintf('%s/result.txt', dir));
+    fscanf(fid, '%s', 1); bl_acc = fscanf(fid, '%f', 1);
+    fscanf(fid, '%s', 1); bl_cmplt = fscanf(fid, '%f', 1);
 
 end % end of ii
 
@@ -51,7 +58,7 @@ end % end of jj
 end % end of kk
 
 nplots = 3;
-color = distinguishable_colors(nplots);
+color = distinguishable_colors(nplots + 1);
 legends = cell(2 * nplots, 1);
 
 %% plot mvs
@@ -67,14 +74,18 @@ for i = 1 : 3 % plot
         set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
         legends{2 * j} = sprintf('%0.2f', ind(j)/10);
     end
+    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
     xlabel(labels{1}, 'FontSize', 24);
     ylabel('accuracy/completeness', 'FontSize', 24);
     xlim([0, 1]);
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
+    l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
+    set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
+    l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
+    set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex(p([1, 1 + nplots]), {'accuracy', 'completeness'}, ...
+        legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
             'anchor', {'ne','se'}, ...
-            'buffer', [0 0], ...
+            'buffer', [0 -20], ...
             'fontsize', 8', ...
             'title', 'Line');
     [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
@@ -101,14 +112,18 @@ for i = 1 : 3 % plot
         set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
         legends{j + nplots} = sprintf('%0.2f', ind(j)/10);
     end
+    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
     xlabel(labels{1}, 'FontSize', 24);
     ylabel('accuracy/completeness', 'FontSize', 24);
     xlim([0, 1]);
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
+    l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
+    set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
+    l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
+    set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex(p([1, 1 + nplots]), {'accuracy', 'completeness'}, ...
+        legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
             'anchor', {'ne','se'}, ...
-            'buffer', [0 0], ...
+            'buffer', [0 -20], ...
             'fontsize', 8', ...
             'title', 'Line');
     [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
@@ -135,14 +150,18 @@ for i = 1 : 3 % plot
         set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
         legends{j + nplots} = sprintf('%0.2f', ind(j)/10);
     end
+    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
     xlabel(labels{1}, 'FontSize', 24);
     ylabel('accuracy/completeness', 'FontSize', 24);
     xlim([0, 1]);
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
+    l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
+    set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
+    l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
+    set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex(p([1, 1 + nplots]), {'accuracy', 'completeness'}, ...
+        legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
             'anchor', {'ne','se'}, ...
-            'buffer', [0 0], ...
+            'buffer', [0 -20], ...
             'fontsize', 8', ...
             'title', 'Line');
     [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
@@ -170,14 +189,18 @@ for i = 1 : 3 % plot
         set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
         legends{2 * j} = sprintf('%0.2f', ind(j)/10);
     end
+    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
     xlabel(labels{1}, 'FontSize', 24);
     ylabel('accuracy/completeness', 'FontSize', 24);
     xlim([0, 1]);
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
+    l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
+    set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
+    l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
+    set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex(p([1, 1 + nplots]), {'accuracy', 'completeness'}, ...
+        legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
             'anchor', {'ne','se'}, ...
-            'buffer', [0 0], ...
+            'buffer', [0 -20], ...
             'fontsize', 8', ...
             'title', 'Line');
     [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
@@ -204,14 +227,18 @@ for i = 1 : 3 % plot
         set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
         legends{j + nplots} = sprintf('%0.2f', ind(j)/10);
     end
+    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
     xlabel(labels{1}, 'FontSize', 24);
     ylabel('accuracy/completeness', 'FontSize', 24);
     xlim([0, 1]);
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
+    l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
+    set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
+    l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
+    set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex(p([1, 1 + nplots]), {'accuracy', 'completeness'}, ...
+        legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
             'anchor', {'ne','se'}, ...
-            'buffer', [0 0], ...
+            'buffer', [0 -20], ...
             'fontsize', 8', ...
             'title', 'Line');
     [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
@@ -238,14 +265,18 @@ for i = 1 : 3 % plot
         set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
         legends{j + nplots} = sprintf('%0.2f', ind(j)/10);
     end
+    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
     xlabel(labels{1}, 'FontSize', 24);
     ylabel('accuracy/completeness', 'FontSize', 24);
     xlim([0, 1]);
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
+    l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
+    set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
+    l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
+    set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex(p([1, 1 + nplots]), {'accuracy', 'completeness'}, ...
+        legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
             'anchor', {'ne','se'}, ...
-            'buffer', [0 0], ...
+            'buffer', [0 -20], ...
             'fontsize', 8', ...
             'title', 'Line');
     [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
@@ -261,88 +292,88 @@ for i = 1 : 3 % plot
 end
 
 %% plot ps
-% group means boxes with the same colour
-legends = cell(nplots, 1);
-% x-axis: alb, box (group): spec, plot: rough
-labels = {props{2}, props{3}, props{4}};
-for i = 1 : 3 % plot
-    fig = figure;
-    x = []; y = []; z = [];
-    for j = 1 : 3 % x-axis
-        x = [x, angle_cell{j, 1, i}]; % group 1
-        y = [y, angle_cell{j, 2, i}]; % group 2
-        z = [z, angle_cell{j, 3, i}]; % group 3
-        legends{j} = sprintf('%.02f', ind(j)/10);
-    end
-    angle_plot = cat(1, reshape(x,[1 size(x)]), reshape(y,[1 size(y)]), reshape(z,[1 size(z)]));
-    p = aboxplot(angle_plot, 'labels', [0.2 0.5, 0.8]);
-    xlabel(labels{1}, 'FontSize', 24);
-    ylabel('angle difference', 'FontSize', 24);
-    ylim([0, 45]);
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24);
-    [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex(p, legends, ...
-            'anchor', {'ne','ne'}, ...
-            'buffer', [0 0], ...
-            'fontsize',8, ...
-            'xscale',0.5, ...
-            'title', sprintf('%s', labels{2}));
-    saveas(fig, sprintf('%s/result/ps_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-    close(fig);
-end
-
-% x-axis: spec, box (group): rough, plot: alb
-labels = {props{3}, props{4}, props{2}};
-for i = 1 : 3 % plot
-    fig = figure;
-    x = []; y = []; z = [];
-    for j = 1 : 3 % x-axis
-        x = [x, angle_cell{i, j, 1}];
-        y = [y, angle_cell{i, j, 2}];
-        z = [z, angle_cell{i, j, 3}];
-        legends{j} = sprintf('%.02f', ind(j)/10);
-    end
-    angle_plot = cat(1, reshape(x,[1 size(x)]), reshape(y,[1 size(y)]), reshape(z,[1 size(z)]));
-    p = aboxplot(angle_plot, 'labels', [0.2 0.5, 0.8]);
-    xlabel(labels{1}, 'FontSize', 24);
-    ylabel('angle difference', 'FontSize', 24);
-    ylim([0, 45]);
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24);
-    [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex(p, legends, ...
-            'anchor', {'ne','ne'}, ...
-            'buffer', [0 0], ...
-            'fontsize',8, ...
-            'xscale',0.5, ...
-            'title', sprintf('%s', labels{2}));
-    saveas(fig, sprintf('%s/result/ps_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-    close(fig);
-end
-
-% x-axis: rough, box (group): alb, plot: spec
-labels = {props{4}, props{2}, props{3}};
-for i = 1 : 3 % plot
-    fig = figure;
-    x = []; y = []; z = [];
-    for j = 1 : 3 % x-axis
-        x = [x, angle_cell{1, i, j}];
-        y = [y, angle_cell{2, i, j}];
-        z = [z, angle_cell{3, i, j}];
-        legends{j} = sprintf('%.02f', ind(j)/10);
-    end
-    angle_plot = cat(1, reshape(x,[1 size(x)]), reshape(y,[1 size(y)]), reshape(z,[1 size(z)]));
-    p = aboxplot(angle_plot, 'labels', [0.2 0.5, 0.8]);
-    xlabel(labels{1}, 'FontSize', 24);
-    ylabel('angle difference', 'FontSize', 24);
-    ylim([0, 45]);
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24);
-    [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex(p, legends, ...
-            'anchor', {'ne','ne'}, ...
-            'buffer', [0 0], ...
-            'fontsize',8, ...
-            'xscale',0.5, ...
-            'title', sprintf('%s', labels{2}));
-    saveas(fig, sprintf('%s/result/ps_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-    close(fig);
-end
+% % group means boxes with the same colour
+% legends = cell(nplots, 1);
+% % x-axis: alb, box (group): spec, plot: rough
+% labels = {props{2}, props{3}, props{4}};
+% for i = 1 : 3 % plot
+%     fig = figure;
+%     x = []; y = []; z = [];
+%     for j = 1 : 3 % x-axis
+%         x = [x, angle_cell{j, 1, i}]; % group 1
+%         y = [y, angle_cell{j, 2, i}]; % group 2
+%         z = [z, angle_cell{j, 3, i}]; % group 3
+%         legends{j} = sprintf('%.02f', ind(j)/10);
+%     end
+%     angle_plot = cat(1, reshape(x,[1 size(x)]), reshape(y,[1 size(y)]), reshape(z,[1 size(z)]));
+%     p = aboxplot(angle_plot, 'labels', [0.2 0.5, 0.8]);
+%     xlabel(labels{1}, 'FontSize', 24);
+%     ylabel('angle difference', 'FontSize', 24);
+%     ylim([0, 45]);
+%     title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24);
+%     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
+%         legendflex(p, legends, ...
+%             'anchor', {'ne','ne'}, ...
+%             'buffer', [0 0], ...
+%             'fontsize',8, ...
+%             'xscale',0.5, ...
+%             'title', sprintf('%s', labels{2}));
+%     saveas(fig, sprintf('%s/result/ps_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+%     close(fig);
+% end
+% 
+% % x-axis: spec, box (group): rough, plot: alb
+% labels = {props{3}, props{4}, props{2}};
+% for i = 1 : 3 % plot
+%     fig = figure;
+%     x = []; y = []; z = [];
+%     for j = 1 : 3 % x-axis
+%         x = [x, angle_cell{i, j, 1}];
+%         y = [y, angle_cell{i, j, 2}];
+%         z = [z, angle_cell{i, j, 3}];
+%         legends{j} = sprintf('%.02f', ind(j)/10);
+%     end
+%     angle_plot = cat(1, reshape(x,[1 size(x)]), reshape(y,[1 size(y)]), reshape(z,[1 size(z)]));
+%     p = aboxplot(angle_plot, 'labels', [0.2 0.5, 0.8]);
+%     xlabel(labels{1}, 'FontSize', 24);
+%     ylabel('angle difference', 'FontSize', 24);
+%     ylim([0, 45]);
+%     title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24);
+%     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
+%         legendflex(p, legends, ...
+%             'anchor', {'ne','ne'}, ...
+%             'buffer', [0 0], ...
+%             'fontsize',8, ...
+%             'xscale',0.5, ...
+%             'title', sprintf('%s', labels{2}));
+%     saveas(fig, sprintf('%s/result/ps_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+%     close(fig);
+% end
+% 
+% % x-axis: rough, box (group): alb, plot: spec
+% labels = {props{4}, props{2}, props{3}};
+% for i = 1 : 3 % plot
+%     fig = figure;
+%     x = []; y = []; z = [];
+%     for j = 1 : 3 % x-axis
+%         x = [x, angle_cell{1, i, j}];
+%         y = [y, angle_cell{2, i, j}];
+%         z = [z, angle_cell{3, i, j}];
+%         legends{j} = sprintf('%.02f', ind(j)/10);
+%     end
+%     angle_plot = cat(1, reshape(x,[1 size(x)]), reshape(y,[1 size(y)]), reshape(z,[1 size(z)]));
+%     p = aboxplot(angle_plot, 'labels', [0.2 0.5, 0.8]);
+%     xlabel(labels{1}, 'FontSize', 24);
+%     ylabel('angle difference', 'FontSize', 24);
+%     ylim([0, 45]);
+%     title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24);
+%     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
+%         legendflex(p, legends, ...
+%             'anchor', {'ne','ne'}, ...
+%             'buffer', [0 0], ...
+%             'fontsize',8, ...
+%             'xscale',0.5, ...
+%             'title', sprintf('%s', labels{2}));
+%     saveas(fig, sprintf('%s/result/ps_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+%     close(fig);
+% end

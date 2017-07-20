@@ -1,4 +1,4 @@
-addpath(genpath('C:\Users\Admin\Documents\3D_Recon\Photometric Stereo'));
+% addpath(genpath('C:\Users\Admin\Documents\3D_Recon\Photometric Stereo'));
 mask = imread(sprintf('%s/gt/mask.bmp', data.rdir));
 mask(mask > 0) = 1;
 norm_map_rgb_gt = imread(sprintf('%s/gt/ps.png', data.rdir));
