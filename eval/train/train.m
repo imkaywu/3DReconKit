@@ -3,17 +3,17 @@ clear, clc, close all;
 addpath(genpath('../../'));
 
 obj_name = 'sphere';
-algs = {'ps', 'mvs', 'sl'};
+algs = {'ps', 'mvs', 'sl', 'sc'};
 props = {'tex', 'alb', 'spec', 'rough', 'concav'};
 alg_prop = logical([0, 1, 1, 1, 0; 1, 1, 1, 0, 0; 0, 1, 1, 1, 0]);
 pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the data
 ref_dir = sprintf('%s/ref_obj', pdir);
 gt_dir = sprintf('%s/groundtruth', pdir);
-run_alg = 1;
+run_alg = 0;
 run_eval = 1;
 run_eval_ps = 0;
 
-for aa = 1 : numel(algs)
+for aa = 4 : numel(algs)
 
 % ind = find(alg_prop(aa, :));
 % eff_props = sprintf('%s_%s_%s', props{ind(1)}, props{ind(2)}, props{ind(3)});
@@ -86,13 +86,21 @@ end
 
 %% Run VH
 case 'vh'
-% addpath C:\Users\Admin\Documents\3D_Recon\VisualHull;
-% dir = sprintf('%s/vh', rdir);
-file_base = obj_name;
 if(update || ~exist(sprintf('%s/%s_vh.ply', dir, obj_name), 'file'))
     VisualHullMain_syn;
 end
 if(update || ~exist(sprintf('%s/result.txt', dir), 'file'))
+    eval_acc_cmplt;
+end
+
+%% Run Space carving
+case 'sc'
+idir = rdir;
+cdir = fullfile(fileparts(fileparts(mfilename('fullpath'))), 'CamData');
+if(run_alg || ~exist(sprintf('%s/%s_sc.ply', idir, obj_name), 'file'))
+    space_carving_syn;
+end
+if (run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
     eval_acc_cmplt;
 end
 

@@ -5,9 +5,7 @@ addpath(genpath('../include'));
 obj_name = 'sphere';
 algs = {'sl'};
 props = {'tex', 'alb', 'spec', 'rough'};
-rdir = sprintf('C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/%s', obj_name);
-ref_dir = '../../ref_obj';
-gt_dir = '../../groundtruth';
+pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the data
 ind = 2 : 3 : 8;
 
 nplots = 3;
@@ -18,7 +16,7 @@ legends = cell(2 * nplots, 1);
 
 for aa = 1 : numel(algs)
 
-idir = sprintf('%s/%s', rdir, algs{aa});
+rdir = sprintf('%s/%s/%s', pdir, obj_name, algs{aa});
 
 for ii = 1 : numel(props) - 1
     
@@ -32,8 +30,8 @@ case {'mvs', 'sl', 'vh'}
     
     for i = 1 : numel(ind)
         for j = 1 : numel(ind)
-            dir = sprintf('%s/%s/%02d%02d', idir, prop_pair, ind(i), ind(j));
-            fid = fopen(sprintf('%s/result.txt', dir));
+            idir = sprintf('%s/%s/%02d%02d', rdir, prop_pair, ind(i), ind(j));
+            fid = fopen(sprintf('%s/result.txt', idir));
             fscanf(fid, '%s', 1); acc_mat(i, j) = fscanf(fid, '%f', 1);
             fscanf(fid, '%s', 1); cmplt_mat(i, j) = fscanf(fid, '%f', 1);
         end
@@ -42,9 +40,9 @@ case 'ps'
     angle_mat = [];
     for i = 1 : numel(ind)
         for j = 1 : numel(ind)
-            dir = sprintf('%s/%s/%02d%02d', idir, prop_pair, ind(i), ind(j));
+            idir = sprintf('%s/%s/%02d%02d', rdir, prop_pair, ind(i), ind(j));
             data.rdir = rdir;
-            data.dir = dir;
+            data.idir = idir;
             eval_angle;
             angle_mat = [angle_mat, angle];
             clear norm_map
@@ -182,7 +180,7 @@ case 'ps'
 %            sprintf('%s: %.02f', props{jj}, ind(2)/10), ...
 %            sprintf('%s: %.02f', props{jj}, ind(3)/10), ...
 %            'Location', 'best');
-    saveas(fig, sprintf('%s/result/%s_%s.eps', rdir, algs{aa}, prop_pair), 'epsc2');
+    saveas(fig, sprintf('%s/%s/result/%s_%s.eps', pdir, obj_name, algs{aa}, prop_pair), 'epsc2');
 end
 
 end % end of jj

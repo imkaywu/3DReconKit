@@ -19,9 +19,9 @@ for oo = 1 : numel(obj_names)
 
 for aa = 1 : numel(algs)
 
-for pp = 1 : size(val_prop, 1)
+for pp = 1 : size(val_prop, 1)top
 
-rdir = sprintf('%s/testing/%s', pdir, obj_names{oo});
+rdir = sprintf('%s/testing/%s',pdir, obj_names{oo});
 
 switch algs{aa}
 %% Run MVS

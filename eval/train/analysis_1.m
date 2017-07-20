@@ -4,12 +4,12 @@ clear, clc, close all;
 addpath(genpath('../include/'));
 
 obj_name = 'sphere';
-% algs = {'ps'};
 props = {'tex', 'alb', 'spec', 'rough', 'concav'};
 ind_eff_props = logical([1, 1, 1, 0, 0; 0, 1, 1, 1, 0; 0, 1, 1, 1, 0]);
-rdir = sprintf('C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/%s', obj_name);
-ref_dir = '../../ref_obj';
-gt_dir = '../../groundtruth';
+pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the data
+rdir = sprintf('%s/%s', pdir, obj_name);
+ref_dir = sprintf('%s/ref_obj', pdir);
+gt_dir = sprintf('%s/groundtruth', pdir);
 ind = 2 : 3 : 8;
 
 mvs_acc_mat = zeros(3, 3, 3);

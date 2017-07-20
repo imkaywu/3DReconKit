@@ -19,68 +19,65 @@ for oo = 1 : numel(obj_names)
 
 for aa = 1 : numel(algs)
 
-for pp = 1 : size(val_prop, 1)
+for pp = 1 : size(val_prop, 1)top
 
-fdir = sprintf('C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/testing/%s', obj_names{oo});
+rdir = sprintf('%s/testing/%s',pdir, obj_names{oo});
 
 switch algs{aa}
 %% Run MVS
 case 'mvs'
 obj_name = obj_names{oo};
-dir = sprintf('%s/mvs/%02d%02d%02d%02d', fdir, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4));
-copyfile('../../algo/MVS/PMVS/copy2mvs', dir);
+idir = sprintf('%s/mvs/%02d%02d%02d%02d', rdir, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4));
+copyfile('../../algo/MVS/PMVS/copy2mvs', idir);
 foption = sprintf('%s_%s', obj_name, algs{aa});
-movefile(sprintf('%s/option', dir), sprintf('%s/%s', dir, foption));
-cmd = sprintf('pmvs2 %s/ option', dir);
-wait_for_existence(sprintf('%s/visualize/0040.jpg', dir), 'file', 10, 3600);
-if run_alg || ~exist([dir, '/models/', obj_names{oo}, '_', algs{aa}, '.ply'], 'file')
+movefile(sprintf('%s/option', idir), sprintf('%s/%s', idir, foption));
+cmd = sprintf('pmvs2 %s/ option', idir);
+wait_for_existence(sprintf('%s/visualize/0040.jpg', idir), 'file', 10, 3600);
+if run_alg || ~exist([idir, '/models/', obj_names{oo}, '_', algs{aa}, '.ply'], 'file')
     cd('../../algo/MVS/PMVS/bin_x64'); system(cmd); cd('../../../../eval/test');
 end
-if(run_eval || ~exist(sprintf('%s/result.txt', dir), 'file'))
+if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
     eval_acc_cmplt;
 %     close all; fig = figure(1);
 %     plot3(verts(1, :)+0.01, verts(2, :)+0.01, verts(3, :)+0.01, 'k.'); hold on; plot3(verts_gt(1, :), verts_gt(2, :), verts_gt(3, :), 'r.'); view(0, 90);
-%     saveas(fig, sprintf('%s/result/%s_mvs_%02d%02d%02d%02d.png', fdir, obj_name, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4)));
+%     saveas(fig, sprintf('%s/result/%s_mvs_%02d%02d%02d%02d.png', rdir, obj_name, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4)));
 %     close(fig);
 end
-rmdir(sprintf('%s/txt/', dir), 's');
-delete(sprintf('%s/%s', dir, foption));
-delete(sprintf('%s/vis.dat', dir));
+rmdir(sprintf('%s/txt/', idir), 's');
+delete(sprintf('%s/%s', idir, foption));
+delete(sprintf('%s/vis.dat', idir));
 
 %% Run SL
 case 'sl'
-% dir_sl = 'C:/Users/Admin/Documents/3D_Recon/kwStructuredLight';
-% addpath (genpath(dir_sl));
-% change objName
-objDir = sprintf('%s/sl/%02d%02d%02d%02d', fdir, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4)); % used in slProcess_syn
+idir = sprintf('%s/sl/%02d%02d%02d%02d', rdir, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4)); % used in slProcess_syn
+objDir= idir;
 objName = obj_names{oo};
 obj_name = objName;
 alg_type = algs{aa};
-wait_for_existence(sprintf('%s/0041.jpg', objDir), 'file', 10, 3600);
-if(run_alg || ~exist(sprintf('%s/%s_sl.ply', objDir, obj_names{oo}), 'file'))
+wait_for_existence(sprintf('%s/0041.jpg', idir), 'file', 10, 3600);
+if(run_alg || ~exist(sprintf('%s/%s_sl.ply', idir, obj_names{oo}), 'file'))
     slProcess_syn;
 end
-if(run_eval || ~exist(sprintf('%s/result.txt', objDir), 'file'))
+if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
     eval_acc_cmplt;
 %     close all; fig = figure(1);
 %     plot3(verts(1, :), verts(2, :), verts(3, :), 'k.'); hold on; plot3(verts_gt(1, :), verts_gt(2, :), verts_gt(3, :), 'r.'); view(0, 90); axis equal;
-%     saveas(fig, sprintf('%s/result/%s_sl_%02d%02d%02d%02d.png', fdir, objName, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4)));
+%     saveas(fig, sprintf('%s/result/%s_sl_%02d%02d%02d%02d.png', rdir, objName, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4)));
 %     close(fig);
 end
 
 %% Run PS
 case 'ps'
-% dir_ps = 'C:/Users/Admin/Documents/3D_Recon/Photometric Stereo';
-% addpath(genpath(dir_ps));
-data.dir = sprintf('%s/ps/%02d%02d%02d%02d', fdir, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4));
+idir = sprintf('%s/ps/%02d%02d%02d%02d', rdir, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4));
+data.idir = idir;
 data.rdir = rdir;
 data.ref_dir = ref_dir;
 data.obj_name = obj_names{oo};
-wait_for_existence(sprintf('%s/0024.jpg', data.dir), 'file', 10, 3600);
-if(run_alg || ~exist(sprintf('%s/normal.png', data.dir), 'file'))
+wait_for_existence(sprintf('%s/0024.jpg', data.idir), 'file', 10, 3600);
+if(run_alg || ~exist(sprintf('%s/normal.png', data.idir), 'file'))
     main_ps;
 end
-if(run_eval_ps || ~exist(sprintf('%s/result.txt', data.dir), 'file'))
+if(run_eval_ps || ~exist(sprintf('%s/result.txt', data.idir), 'file'))
     eval_angle;
 end
 
