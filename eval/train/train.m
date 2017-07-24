@@ -6,9 +6,10 @@ obj_name = 'sphere';
 algs = {'ps', 'mvs', 'sl', 'sc'};
 props = {'tex', 'alb', 'spec', 'rough', 'concav'};
 alg_prop = logical([0, 1, 1, 1, 0; 1, 1, 1, 0, 0; 0, 1, 1, 1, 0]);
-pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the data
+pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
+rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
 ref_dir = sprintf('%s/ref_obj', pdir);
-gt_dir = sprintf('%s/groundtruth', pdir);
+% gt_dir = sprintf('%s/groundtruth', pdir);
 run_alg = 0;
 run_eval = 1;
 run_eval_ps = 0;
@@ -17,7 +18,7 @@ for aa = 1 : numel(algs)
 
 % ind = find(alg_prop(aa, :));
 % eff_props = sprintf('%s_%s_%s', props{ind(1)}, props{ind(2)}, props{ind(3)});
-rdir = sprintf('%s/%s/train/%s', pdir, obj_name, algs{aa});
+adir = sprintf('%s/%s/train/%s', pdir, obj_name, algs{aa});
 
 switch algs{aa}
 %% Run MVS
@@ -25,7 +26,7 @@ case 'mvs'
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         for ind_3 = 2 : 3 : 8
-        idir = sprintf('%s/%02d%02d%02d00', rdir, ind_1, ind_2, ind_3);
+        idir = sprintf('%s/%02d%02d%02d00', adir, ind_1, ind_2, ind_3);
         copyfile('../../algo/MVS/PMVS/copy2mvs', idir);
         foption = sprintf('%s_%s', obj_name, algs{aa});
         movefile([idir, '/option'], [idir, '/', foption]);
@@ -49,7 +50,7 @@ case 'sl'
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         for ind_3 = 2 : 3 : 8
-        idir = sprintf('%s/00%02d%02d%02d', rdir, ind_1, ind_2, ind_3);
+        idir = sprintf('%s/00%02d%02d%02d', adir, ind_1, ind_2, ind_3);
         objDir = idir; % used in slProcess_syn
         objName = obj_name;
         wait_for_existence(sprintf('%s/0041.jpg', idir), 'file', 10, 3600);
@@ -68,7 +69,7 @@ case 'ps'
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         for ind_3 = 2 : 3 : 8
-        idir = sprintf('%s/00%02d%02d%02d', rdir, ind_1, ind_2, ind_3);
+        idir = sprintf('%s/00%02d%02d%02d', adir, ind_1, ind_2, ind_3);
         data.idir = idir;
         data.rdir = rdir;
         data.ref_dir = ref_dir;

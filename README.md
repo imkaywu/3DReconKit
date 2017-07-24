@@ -1,18 +1,17 @@
-`run.mat`: run the algorithms and evaluate.mat to compute the accuracy and completeness
+## Algorithms
+* PMVS: patch-based Multi-view Stereo
+* EPS: example-based Photometric Stereo
+* GSL: gray-encoded Structured Light
+* VH: volumetric based Visual Hull
+* SC: space carving
 
-`eval_acc_cmplt`: evaluate the accuracy and completeness of MVS, SL and VH
+## Evaluation
 
-`eval_angle`: evaluate the angle difference of PS
-
-`gen_norms.mat`: generate uniformly distributed samples on a sphere
-
-
-## files that not used
-`evaluate.mat`: compute the accuracy and completeness of the reconstruction
-
-`evaluate_mvs.mat` and `evaluate_sl.mat` are currently not used
-
-`eval_ps.mat`: evaluate the PS as a height map
+There are three separate directories: `pairwise`, `train`, and `test`. Each directory, there are two files:
+* `run` (`train`, `test`); run the algorithms to compute the accuracy and completeness
+* `analysis`: plot the graphs
+* `eval_acc_cmplt`: evaluate the accuracy and completeness of MVS, SL and VH
+* `eval_angle`: evaluate the angle difference of PS
 
 ## Results
 
@@ -37,3 +36,10 @@
 
 #### SL
 ![sl training](img/sl_train.png)
+
+## files that not used
+`evaluate.mat`: compute the accuracy and completeness of the reconstruction
+
+`evaluate_mvs.mat` and `evaluate_sl.mat` are currently not used
+
+`eval_ps.mat`: evaluate the PS as a height map

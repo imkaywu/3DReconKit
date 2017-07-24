@@ -9,7 +9,6 @@ ind_eff_props = logical([1, 1, 1, 0, 0; 0, 1, 1, 1, 0; 0, 1, 1, 1, 0]);
 pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
 rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
 ref_dir = sprintf('%s/ref_obj', pdir);
-% gt_dir = sprintf('%s/groundtruth', pdir);
 ind = 2 : 3 : 8;
 
 cmplt_prct = 0.5;
