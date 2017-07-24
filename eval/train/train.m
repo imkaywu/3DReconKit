@@ -13,7 +13,7 @@ run_alg = 0;
 run_eval = 1;
 run_eval_ps = 0;
 
-for aa = 4 : numel(algs)
+for aa = 1 : numel(algs)
 
 % ind = find(alg_prop(aa, :));
 % eff_props = sprintf('%s_%s_%s', props{ind(1)}, props{ind(2)}, props{ind(3)});

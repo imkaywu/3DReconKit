@@ -26,3 +26,14 @@
 
 #### SL
 ![sl dependency checking](img/sl_depend_check.png)
+
+### Training
+
+#### MVS
+![mvs training](img/mvs_train.png)
+
+#### PS
+![ps training](img/ps_train.png)
+
+#### SL
+![sl training](img/sl_train.png)
