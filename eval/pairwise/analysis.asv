@@ -3,10 +3,9 @@ clear, clc, close all;
 addpath(genpath('../include'));
 
 obj_name = 'sphere';
-algs = {'ps', 'mvs', 'sl'};
+algs = {'sl'};
 props = {'tex', 'alb', 'spec', 'rough'};
-pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
-rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
+pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the data
 ind = 2 : 3 : 8;
 
 nplots = 3;
@@ -17,7 +16,7 @@ legends = cell(2 * nplots, 1);
 
 for aa = 1 : numel(algs)
 
-adir = sprintf('%s/%s/pairwise/%s', pdir, obj_name, algs{aa});
+rdir = sprintf('%s/%s/pairwise/%s', pdir, obj_name, algs{aa});
 
 for ii = 1 : numel(props) - 1
     
@@ -31,7 +30,7 @@ case {'mvs', 'sl', 'vh'}
     
     for i = 1 : numel(ind)
         for j = 1 : numel(ind)
-            idir = sprintf('%s/%s/%02d%02d', adir, prop_pair, ind(i), ind(j));
+            idir = sprintf('%s/%s/%02d%02d', rdir, prop_pair, ind(i), ind(j));
             fid = fopen(sprintf('%s/result.txt', idir));
             fscanf(fid, '%s', 1); acc_mat(i, j) = fscanf(fid, '%f', 1);
             fscanf(fid, '%s', 1); cmplt_mat(i, j) = fscanf(fid, '%f', 1);
@@ -41,7 +40,7 @@ case 'ps'
     angle_mat = [];
     for i = 1 : numel(ind)
         for j = 1 : numel(ind)
-            idir = sprintf('%s/%s/%02d%02d', adir, prop_pair, ind(i), ind(j));
+            idir = sprintf('%s/pairwise/%s/%02d%02d', rdir, prop_pair, ind(i), ind(j));
             data.rdir = rdir;
             data.idir = idir;
             eval_angle;
@@ -145,10 +144,10 @@ case {'mvs', 'sl', 'vh'}
     xlim([0, 1]);
     title(sprintf('%s: %s and %s', algs{aa}, props{ii}, props{jj}), 'FontSize', 24, 'FontWeight', 'bold');
     if(~exist(sprintf('%s/result/png', rdir), 'dir'))
-        mkdir(sprintf('%s/result/png', rdir));
+        mkdir(sprintf('%s/result', rdir));
     end
 %     saveas(fig, sprintf('%s/result/%s_%s.eps', rdir, algs{aa}, prop_pair), 'epsc2');
-    saveas(fig, sprintf('%s/result/png/%s_%s.png', rdir, algs{aa}, prop_pair));
+    saveas(fig, sprintf('%s/result/%s_%s.png', rdir, algs{aa}, prop_pair));
 case 'ps'
     % angle difference
     if(~exist(sprintf('%s/result', rdir), 'dir'))
@@ -170,15 +169,13 @@ case 'ps'
     xlabel(props{ii}, 'FontSize', 24);
     ylabel('angle difference', 'FontSize', 24);
     title(sprintf('%s: %s and %s', algs{aa}, props{ii}, props{jj}), 'FontSize', 24, 'FontWeight', 'bold');
-    if(~exist(sprintf('%s/result/png', rdir), 'dir'))
-        mkdir(sprintf('%s/result/png', rdir));
-    end
-%     saveas(fig, sprintf('%s/%s/result/%s_%s.eps', rdir, obj_name, algs{aa}, prop_pair), 'epsc2');
-    saveas(fig, sprintf('%s/result/png/%s_%s.png', rdir, algs{aa}, prop_pair));
+%     saveas(fig, sprintf('%s/%s/result/%s_%s.eps', pdir, obj_name, algs{aa}, prop_pair), 'epsc2');
+    saveas(fig, sprintf('%s/%s/result/%s_%s.png', pdir, obj_name, algs{aa}, prop_pair));
 end
 
 end % end of jj
 
 end % enf of ii
 
+frames
 end % enf of algs

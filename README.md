@@ -13,3 +13,16 @@
 `evaluate_mvs.mat` and `evaluate_sl.mat` are currently not used
 
 `eval_ps.mat`: evaluate the PS as a height map
+
+## Results
+
+### Dependency checking
+
+#### MVS
+![mvs dependency checking](img/mvs_depend_check.png)
+
+#### PS
+![ps dependency checking](img/ps_depend_check.png)
+
+#### SL
+![sl dependency checking](img/sl_depend_check.png)

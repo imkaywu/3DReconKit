@@ -6,10 +6,10 @@ norm_map_gt = decode(norm_map_rgb_gt, mask);
 % show_surfNorm(255 * mask, norm_map_gt, 10);
 
 if(~exist('norm_map', 'var'))
-    if(exist(sprintf('%s/normal.png', data.dir), 'file'))
-        norm_map_rgb = imread(sprintf('%s/normal.png', data.dir));
+    if(exist(sprintf('%s/normal.png', data.idir), 'file'))
+        norm_map_rgb = imread(sprintf('%s/normal.png', data.idir));
     else
-        norm_map_rgb = imread(sprintf('%s/normal.jpg', data.dir));
+        norm_map_rgb = imread(sprintf('%s/normal.jpg', data.idir));
     end
     norm_map = decode(norm_map_rgb, mask);
 end
@@ -49,8 +49,8 @@ fprintf('max angle: %.08f\n', max_ang);
 fprintf('min angle: %.08f\n', min_ang);
 fprintf('accuracy: %.08f\n', acc_ang);
 
-if(~exist([data.dir, '/result.txt'], 'file'))
-    fid = fopen([data.dir, '/result.txt'], 'wt');
+if(~exist([data.idir, '/result.txt'], 'file'))
+    fid = fopen([data.idir, '/result.txt'], 'wt');
     fprintf(fid, 'mean angle: %.08f\nmedian angle: %.08f\nvar angle: %.08f\nstd angle: %.08f\nmax angle: %.08f\nmin angle: %.08f\naccuracy: %.08f\n', mean_ang, median_ang, var_ang, std_ang, max_ang, min_ang, acc_ang);
     fclose(fid);
 end

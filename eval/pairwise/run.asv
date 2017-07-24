@@ -6,16 +6,16 @@ obj_name = 'sphere';
 algs = {'ps', 'mvs', 'sl'};
 props = {'tex', 'alb', 'spec', 'rough'};
 pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
-rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
+rdir = sprintf('%s/%s/', pdir, obj_name); % root directory of the dataset
 ref_dir = sprintf('%s/ref_obj', pdir);
-% gt_dir = sprintf('%s/groundtruth', pdir);
+gt_dir = sprintf('%s/groundtruth', pdir);
 run_alg = 1;
 run_eval = 1;
 run_eval_ps = 0;
 
 for aa = 1 : numel(algs)
 
-adir = sprintf('%s/%s/pairwise/%s', pdir, obj_name, algs{aa});
+rdir = sprintf('%s/%s/pairwise/%s', pdir, obj_name, algs{aa});
 
 for ii = 1 : numel(props) - 1
     
@@ -29,7 +29,7 @@ switch algs{aa}
 case 'mvs'
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
-        idir = sprintf('%s/%s/%02d%02d', adir, prop_pair, ind_1, ind_2);
+        idir = sprintf('%s/%s/%02d%02d', rdir, prop_pair, ind_1, ind_2);
         copyfile('../../algo/MVS/PMVS/copy2mvs', idir);
         foption = sprintf('%s_%s', obj_name, algs{aa});
         movefile(sprintf('%s/option', idir), sprintf('%s/%s', idir, foption));
@@ -53,11 +53,11 @@ case 'sl'
 % addpath (genpath(dir_sl));
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
-        idir = sprintf('%s/%s/%02d%02d', adir, prop_pair, ind_1, ind_2);
+        idir = sprintf('%s/%s/%02d%02d', rdir, prop_pair, ind_1, ind_2);
         objDir = idir;
         objName = obj_name;
         wait_for_existence(sprintf('%s/0041.jpg', idir), 'file', 10, 3600);
-        if(run_alg || ~exist(sprintf('%s/%s_sl.ply', idir, obj_name), 'file'))
+        if(run_alg || ~exist(sprintf('%s/%s_sl.ply', idir, objName), 'file'))
             slProcess;
         end
         if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
@@ -76,7 +76,7 @@ case 'ps'
 % addpath(genpath(dir_ps));
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
-        idir = sprintf('%s/%s/%02d%02d', adir, prop_pair, ind_1, ind_2);
+        idir = sprintf('%s/%s/%02d%02d', rdir, prop_pair, ind_1, ind_2);
         data.idir = idir;
         data.rdir = rdir;
         data.ref_dir = ref_dir;
