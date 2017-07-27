@@ -1,16 +1,17 @@
 % training
 clear, clc, close all;
-addpath(genpath('../../'));
+addpath(genpath('../../algo'));
 
 obj_name = 'sphere';
-algs = {'ps', 'mvs', 'sl', 'sc'};
+algs = {'mvs'};
 props = {'tex', 'alb', 'spec', 'rough', 'concav'};
 alg_prop = logical([0, 1, 1, 1, 0; 1, 1, 1, 0, 0; 0, 1, 1, 1, 0]);
 pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
+tdir = sprintf('%s/3DRecon_Algo_Eval', pdir); % root directory of the boolbox
 rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
 ref_dir = sprintf('%s/ref_obj', pdir);
 % gt_dir = sprintf('%s/groundtruth', pdir);
-run_alg = 0;
+run_alg = 1;
 run_eval = 1;
 run_eval_ps = 0;
 
@@ -27,13 +28,13 @@ for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         for ind_3 = 2 : 3 : 8
         idir = sprintf('%s/%02d%02d%02d00', adir, ind_1, ind_2, ind_3);
-        copyfile('../../algo/MVS/PMVS/copy2mvs', idir);
+        copyfile(sprintf('%s/algo/MVS/PMVS/copy2mvs', tdir), idir);
         foption = sprintf('%s_%s', obj_name, algs{aa});
         movefile([idir, '/option'], [idir, '/', foption]);
         cmd = sprintf('pmvs2 %s/ %s', idir, foption);
         wait_for_existence(sprintf('%s/visualize/0040.jpg', idir), 'file', 10, 3600);
         if run_alg || ~exist(sprintf('%s/models/%s_%s.ply', idir, obj_name, algs{aa}), 'file')
-            cd('../../algo/MVS/PMVS/bin_x64'); system(cmd); cd('../../../../eval/train');
+            cd(sprintf('%s/algo/MVS/PMVS/bin_x64', tdir)); system(cmd); cd(sprintf('%s/eval/train', tdir));
         end
         if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
             eval_acc_cmplt;

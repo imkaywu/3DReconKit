@@ -11,7 +11,7 @@ rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
 ref_dir = sprintf('%s/ref_obj', pdir);
 ind = 2 : 3 : 8;
 
-cmplt_prct = 0.5;
+cmplt_prct = 0.8;
 mvs_acc_mat = zeros(3, 3, 3);
 mvs_cmplt_mat = zeros(3, 3, 3);
 sl_acc_mat = zeros(3, 3, 3);
@@ -95,8 +95,8 @@ for i = 1 : 3 % plot
             'fontsize',8, ...
             'xscale',0.5, ...
             'title', sprintf('%s', labels{2}));
-%     saveas(fig, sprintf('%s/result/mvs_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-    saveas(fig, sprintf('%s/result/train/mvs_train_%s_%02d.png', rdir, labels{3}, ind(i)));
+    saveas(fig, sprintf('%s/result/mvs_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+%     saveas(fig, sprintf('%s/result/train/mvs_train_%s_%02d.png', rdir, labels{3}, ind(i)));
     close(fig);
 end
 
@@ -134,8 +134,8 @@ for i = 1 : 3 % plot
             'fontsize',8, ...
             'xscale',0.5, ...
             'title', sprintf('%s', labels{2}));
-%     saveas(fig, sprintf('%s/result/mvs_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-    saveas(fig, sprintf('%s/result/train/mvs_train_%s_%02d.png', rdir, labels{3}, ind(i)));
+    saveas(fig, sprintf('%s/result/mvs_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+%     saveas(fig, sprintf('%s/result/train/mvs_train_%s_%02d.png', rdir, labels{3}, ind(i)));
     close(fig);
 end
 
@@ -173,8 +173,8 @@ for i = 1 : 3 % plot
             'fontsize',8, ...
             'xscale',0.5, ...
             'title', sprintf('%s', labels{2}));
-%     saveas(fig, sprintf('%s/result/mvs_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-    saveas(fig, sprintf('%s/result/train/mvs_train_%s_%02d.png', rdir, labels{3}, ind(i)));
+    saveas(fig, sprintf('%s/result/mvs_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+%     saveas(fig, sprintf('%s/result/train/mvs_train_%s_%02d.png', rdir, labels{3}, ind(i)));
     close(fig);
 end
 
@@ -213,8 +213,8 @@ for i = 1 : 3 % plot
             'fontsize',8, ...
             'xscale',0.5, ...
             'title', sprintf('%s', labels{2}));
-%     saveas(fig, sprintf('%s/result/sl_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-    saveas(fig, sprintf('%s/result/train/sl_train_%s_%02d.png', rdir, labels{3}, ind(i)));
+    saveas(fig, sprintf('%s/result/sl_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+%     saveas(fig, sprintf('%s/result/train/sl_train_%s_%02d.png', rdir, labels{3}, ind(i)));
     close(fig);
 end
 
@@ -252,8 +252,8 @@ for i = 1 : 3 % plot
             'fontsize',8, ...
             'xscale',0.5, ...
             'title', sprintf('%s', labels{2}));
-%     saveas(fig, sprintf('%s/result/sl_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-    saveas(fig, sprintf('%s/result/train/sl_train_%s_%02d.png', rdir, labels{3}, ind(i)));
+    saveas(fig, sprintf('%s/result/sl_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+%     saveas(fig, sprintf('%s/result/train/sl_train_%s_%02d.png', rdir, labels{3}, ind(i)));
     close(fig);
 end
 
@@ -291,8 +291,8 @@ for i = 1 : 3 % plot
             'fontsize',8, ...
             'xscale',0.5, ...
             'title', sprintf('%s', labels{2}));
-%     saveas(fig, sprintf('%s/result/sl_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-    saveas(fig, sprintf('%s/result/train/sl_train_%s_%02d.png', rdir, labels{3}, ind(i)));
+    saveas(fig, sprintf('%s/result/sl_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+%     saveas(fig, sprintf('%s/result/train/sl_train_%s_%02d.png', rdir, labels{3}, ind(i)));
     close(fig);
 end
 
@@ -323,8 +323,8 @@ for i = 1 : 3 % plot
             'fontsize',8, ...
             'xscale',0.5, ...
             'title', sprintf('%s', labels{2}));
-%     saveas(fig, sprintf('%s/result/ps_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-    saveas(fig, sprintf('%s/result/train/ps_%s_%02d.png', rdir, labels{3}, ind(i)));
+    saveas(fig, sprintf('%s/result/ps_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+%     saveas(fig, sprintf('%s/result/train/ps_%s_%02d.png', rdir, labels{3}, ind(i)));
     close(fig);
 end
 
@@ -352,8 +352,8 @@ for i = 1 : 3 % plot
             'fontsize',8, ...
             'xscale',0.5, ...
             'title', sprintf('%s', labels{2}));
-%     saveas(fig, sprintf('%s/result/ps_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-    saveas(fig, sprintf('%s/result/train/ps_%s_%02d.png', rdir, labels{3}, ind(i)));
+    saveas(fig, sprintf('%s/result/ps_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+%     saveas(fig, sprintf('%s/result/train/ps_%s_%02d.png', rdir, labels{3}, ind(i)));
     close(fig);
 end
 
@@ -381,7 +381,7 @@ for i = 1 : 3 % plot
             'fontsize',8, ...
             'xscale',0.5, ...
             'title', sprintf('%s', labels{2}));
-%     saveas(fig, sprintf('%s/result/ps_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-    saveas(fig, sprintf('%s/result/train/ps_%s_%02d.png', rdir, labels{3}, ind(i)));
+    saveas(fig, sprintf('%s/result/ps_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+%     saveas(fig, sprintf('%s/result/train/ps_%s_%02d.png', rdir, labels{3}, ind(i)));
     close(fig);
 end

@@ -138,7 +138,7 @@ colorsurface( ptch, cameras );
 set(gca,'Position',[-0.2 0 1.4 0.95])
 axis off
 title( 'Result after 36 carvings with refinement and colour' )
-writeply(sprintf('%s/sphere_sc.ply', idir), ptch.Vertices, ptch.VertexNormals, round(255 * ptch.FaceVertexCData), ptch.Faces);
+writeply(sprintf('%s/%s_sc.ply', idir, obj_name), ptch.Vertices, ptch.VertexNormals, round(255 * ptch.FaceVertexCData), ptch.Faces);
 
 %% Conclusion
 % Hopefully this demo has given you a taste for what is possible by simple

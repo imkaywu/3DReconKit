@@ -1,60 +1,9 @@
-
 %% Carving a Dinosaur
-% This is a demo of reconstructing a 3D shape from multiple images using a
-% simple space-carving approach. This technique is usually used when you
-% need a 3D model of a small artefact which can be placed on a turntable,
-% allowing dozens, even hundreds of images to be captured from around the
-% object. It has been used pretty successfully by museums and the like to
-% create online virtual galleries.
-%
-% _Note: This demo requires the
-% <http://www.mathworks.com/access/helpdesk/help/toolbox/images |Image Processing Toolbox|>._
-%
-% Author: Ben Tordoff
-%
-% Copyright 2005-2009 The MathWorks, Inc.
-
-%% Introduction
-% A little while ago (is it really four years?!) I was asked to prepare a
-% demonstration for a customer visit. The customer had some samples that
-% they wanted to photograph in order to estimate the volume occupied before
-% and after a chemical process. These samples were smooth but irregularly
-% shaped such that a simple "volume of revolution" calculation was
-% inaccurate. They wanted to know if accurate volume estimation from images
-% was possible, and if so how you might do it.
-%
-% The demo I produced is enumerated below and is the most basic form of a
-% technique called "space carving" or "shape from silhouettes", where each
-% image is just used as a mask. A lump of voxel "clay" is placed in the
-% middle of the scene and from each image we simply look and see what is
-% outside the object silhouette. Anything outside is carved away.
-% Obviously, this requires us to know where the camera was relative to the
-% object when the picture was taken, which is a whole separate problem.
-%
-% This technique has been refined over the last decade and can be
-% done in some computationally and memory efficient ways. My approach is
-% neither of these - I went for simplicity over efficiency since my only
-% aim was to explain the technique and show it in MATLAB.
-%
-% *Acknowledgements*
-%
-% The dinosaur images used here were provided by Wolfgang Niem at
-% the University of Hannover.
-%
-% The camera data used in this example was provided by
-% <http://research.microsoft.com/en-us/um/people/awf |Dr A. W. Fitzgibbon|>
-% and <http://www.robots.ox.ac.uk/~az |Prof A. Zisserman|>
-% from the <http://www.robots.ox.ac.uk |University of Oxford Robotics Research Group|>.
-%
-% The images and camera data can both be downloaded from the <http://www.robots.ox.ac.uk/~vgg/data/data-mview.html
-% |Visual Geometry Group web-pages|> at the <http://www.robots.ox.ac.uk
-% |University of Oxford Robotics Research Group|>.
 
 %% Setup
 % All functions for this demo are in the "spacecarving" package and the
 % data in the "DinosaurData" folder.
 import spacecarving.*;
-datadir = fullfile( fileparts( mfilename( 'fullpath' ) ), 'DinosaurData' );
 close all;
 
 
@@ -63,11 +12,12 @@ close all;
 % (internal and external calibration) and image file for each camera. These
 % calibrations have previously been determined from the
 % images using an automatic process that we won't worry about here.
-cameras = loadcameradata( datadir );
+cameras = loadcamera(idir, cdir);
 
 montage( cat( 4, cameras.Image ) );
 set( gcf(), 'Position', [100 100 600 600] )
 axis off;
+
 
 %% Convert the Images into Silhouettes
 % The image in each camera is converted to a binary image using the
@@ -80,7 +30,7 @@ axis off;
 % and <http://www.mathworks.com/access/helpdesk/help/toolbox/images/imclose.html |imclose|>
 % are your friends for this job!
 for c=1:numel(cameras)
-    cameras(c).Silhouette = getsilhouette( cameras(c).Image );
+    cameras(c).Silhouette = cameras(c).Image;
 end
 
 figure('Position',[100 100 600 300]);
@@ -121,39 +71,8 @@ voxels = makevoxels( xlim, ylim, zlim, 6000000 );
 starting_volume = numel( voxels.XData );
 
 % Show the whole scene
-figure('Position',[100 100 600 400]);
-showscene( cameras, voxels );
-
-%% Carve the Voxels Using the First Camera Image
-% The silhouette is projected onto the voxel array.
-% Any voxels that lie outside the silhouette are carved away, leaving only
-% points inside the model. Using just one camera, we end up with a
-% dinosaur-prism - a single camera provides no information on depth.
-voxels = carve( voxels, cameras(1) );
-
-% Show Result
-figure('Position',[100 100 600 300]);
-subplot(1,2,1)
-showscene( cameras(1), voxels );
-title( '1 camera' )
-subplot(1,2,2)
-showsurface( voxels )
-title( 'Result after 1 carving' )
-
-%% Add More Views
-% Adding more views refines the shape. If we include two more, we already
-% have something recognisable, albeit a bit "boxy".
-voxels = carve( voxels, cameras(4) );
-voxels = carve( voxels, cameras(7) );
-
-% Show Result
-figure('Position',[100 100 600 300]);
-subplot(1,2,1)
-title( '3 cameras' )
-showscene( cameras([1 4 7]), voxels );
-subplot(1,2,2)
-showsurface(voxels)
-title( 'Result after 3 carvings' )
+% figure('Position',[100 100 600 400]);
+% showscene( cameras, voxels );
 
 
 %% Now Include All the Views
@@ -219,7 +138,7 @@ colorsurface( ptch, cameras );
 set(gca,'Position',[-0.2 0 1.4 0.95])
 axis off
 title( 'Result after 36 carvings with refinement and colour' )
-
+writeply(sprintf('%s/%s_sc.ply', idir, obj_name), ptch.Vertices, ptch.VertexNormals, round(255 * ptch.FaceVertexCData), ptch.Faces);
 
 %% Conclusion
 % Hopefully this demo has given you a taste for what is possible by simple

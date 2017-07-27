@@ -14,6 +14,8 @@ else
 switch algs{aa}
     case 'mvs'
         [verts_gt, ~, ~] = ply_read_vnf(sprintf('%s/gt/mvs.ply', rdir));
+    case 'sc'
+        [verts_gt, ~, ~] = ply_read_vnf(sprintf('%s/gt/mvs.ply', rdir));
     case 'sl'
         [verts_gt, ~, ~] = ply_read_vnf(sprintf('%s/gt/sl.ply', rdir));
 end
@@ -35,7 +37,7 @@ switch algs{aa}
                     | verts(2, :) < y_lim(1) | verts(2, :) > y_lim(2)...
                     | verts(3, :) < z_lim(1) | verts(3, :) > z_lim(2));
         verts(:, ind_rm) = [];
-        d_thre = 0.015;
+        d_thre = 0.03;
     case 'sl'
         load C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/groundtruth/calib_results/calib_cam_proj.mat Rc_1_cam Tc_1_cam
         [verts, ~] = ply_read_vc(sprintf('%s/%s_%s.ply', idir, objName, algs{aa}));

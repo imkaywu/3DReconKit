@@ -17,7 +17,8 @@ function cameras = loadcamera(idir, cdir, idx)
 %   $Revision: 1.0 $    $Date: 2006/06/30 00:00:00 $
 
 if nargin<3
-    idx = 1 : 41;
+    ntxt = numel(dir(cdir)) - 2;
+    idx = 1 : ntxt;
 end
 
 cameras = struct( ...
@@ -31,7 +32,11 @@ cameras = struct( ...
 %% First, import the camera Pmatrices
 rawP.P = cell(1, numel(idx));
 for ii=idx(:)'
-    fid = fopen(sprintf('%04d.txt', ii - 1));
+    fname = sprintf('%s/%04d.txt', cdir, ii - 1);
+    if(~exist(fname, 'file'))
+        fname = sprintf('%s/%08d.txt', cdir, ii - 1);
+    end
+    fid = fopen(fname);
     fgets(fid);
     tmp = fscanf(fid, '%f');
     rawP.P{ii} = [tmp(1), tmp(2), tmp(3), tmp(4);
@@ -47,6 +52,9 @@ for ii=idx(:)'
     % We try both JPG and PPM extensions, trying JPEG first since it is
     % the faster to load
     filename = sprintf('%s/%04d.jpg', idir, ii - 1);
+    if (~exist(filename, 'file'))
+        filename = sprintf('%s/%08d.jpg', idir, ii - 1);
+    end
     
     [K,R,t] = spacecarving.decomposeP(rawP.P{ii});
     cameras(ii).rawP = rawP.P{ii};

@@ -1,4 +1,4 @@
-close all; clc;
+clear; close all; clc;
 % normal mean and median
 addpath(genpath('C:\Users\Admin\Documents\3D_Recon\Data\synthetic_data\3DRecon_Algo_Eval'));
 rdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/testing/knight';
@@ -17,8 +17,8 @@ norm_map = decode(norm_map_rgb, mask);
 % show_surfNorm(norm_map_rgb, norm_map, 10);
 
 %% change the mean and median
-mu = 10;
-med = 10;
+mu = 8;
+med = 5;
 sigma = 1;
 prct = 0.1;
 imask = find(mask);
@@ -36,9 +36,17 @@ normals(:, 3) = norm_map(imask + 2 * numel(mask));
 % normals_gt(:, 1) = norm_map_gt(imask);
 % normals_gt(:, 2) = norm_map_gt(imask + numel(mask));
 % normals_gt(:, 3) = norm_map_gt(imask + 2 * numel(mask));
+%
 % ang = acosd(sum(normals .* normals_gt, 2));
 % ang1 = acosd(sum(normals1 .* normals_gt, 2));
 % hist(ang, 100);
+% figure; hist(ang1, 100);
+% imask_ang = imask(ang < 10);
+% imask_ang1 = imask(ang1 < 10);
+% [y, x] = ind2sub(size(mask), imask_ang);
+% [y1, x1] = ind2sub(size(mask), imask_ang1);
+% figure; imshow(norm_map_rgb); hold on; plot(x, y, 'r.');
+% figure; imshow(norm_map_rgb1); hold on; plot(x1, y1, 'r.');
 
 % normal to angle
 theta = acosd(normals(:, 3));
@@ -74,5 +82,9 @@ mask(mask > 0) = 1;
 n_z(n_z < 0.01) = 1;
 n_x = norm_map_test(:, :, 1) ./ n_z;
 n_y = norm_map_test(:, :, 2) ./ n_z;
-height_map = integrate_horn2(n_x, n_y, double(mask), 50000, 1);
-write_ply(sprintf('%s/gt/sphere_ps.ply', rdir), height_map, norm_map_test, mask);
+height_map = DepthFromGradient(n_x, n_y);
+height_map = height_map - height_map(end, end);
+height_map(mask < 1) = 0;
+[X, Y] = meshgrid(1:1280, 1:720);
+mesh(X, Y, -height_map);
+axis equal; view(-30, 20); colormap('default');
