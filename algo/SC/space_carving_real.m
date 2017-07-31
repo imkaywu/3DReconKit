@@ -30,20 +30,13 @@ axis off;
 % and <http://www.mathworks.com/access/helpdesk/help/toolbox/images/imclose.html |imclose|>
 % are your friends for this job!
 for c=1:numel(cameras)
-    cameras(c).Silhouette = cameras(c).Image;
+    cameras(c).Silhouette = chromakey(cameras(c).Image, 'white');
 end
 
 figure('Position',[100 100 600 300]);
-
-subplot(1,2,1)
-imshow( cameras(c).Image );
-title( 'Original Image' )
-axis off
-
-subplot(1,2,2)
-imshow( cameras(c).Silhouette );
+montage( cat(4, cameras.Silhouette));
 title( 'Silhouette' )
-axis off
+axis off;
 
 makeFullAxes( gcf );
 
@@ -53,7 +46,9 @@ makeFullAxes( gcf );
 % principal view directions. We then perform a very low-res space-carve
 % using all the cameras to narrow down exactly where the object is. This
 % isn't foolproof, but good enough for this demo.
-[xlim,ylim,zlim] = findmodel( cameras );
+% [xlim,ylim,zlim] = findmodel( cameras );
+mdir = sprintf('%s/models', idir);
+[xlim,ylim,zlim] = bbox(mdir, obj_name);
 
 
 %% Create a Voxel Array
@@ -115,7 +110,9 @@ for jj=1:num_offsets
     myvoxels.ZData = voxels.ZData + off_z(jj);
     for ii=1:numel( cameras )
         [~,mykeep] = carve( myvoxels, cameras(ii) );
-        keep(setdiff( 1:num_voxels, mykeep )) = false;
+        if(~isempty(mykeep))
+            keep(setdiff( 1:num_voxels, mykeep )) = false;
+        end
     end
     scores(keep) = scores(keep) + 1;
 end

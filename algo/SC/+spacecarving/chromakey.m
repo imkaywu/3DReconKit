@@ -1,9 +1,17 @@
-function I = chromakey( im )
+function I = chromakey( im, type )
 
-I = im;
-[h, ~, ~]=rgb2hsv(I);
-msk = (h>0.22 & h<0.45);
-I(find(msk(:))+numel(msk)*0)=0;
-I(find(msk(:))+numel(msk)*1)=0;
-I(find(msk(:))+numel(msk)*2)=0;
+if (nargin < 2)
+    type = 'green';
+end
+
+I = rgb2gray(im);
+[h, s, v]=rgb2hsv(im);
+switch type
+    case 'green'
+        msk = (h > 0.22 & h < 0.45);
+    case 'white'
+        msk = (s < 0.05 & v > 0.95);
+end
+I(msk)=0;
+
 % imshow(I);

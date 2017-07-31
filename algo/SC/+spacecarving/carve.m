@@ -34,8 +34,9 @@ y = y(keep);
 % Now clear any that are not inside the silhouette
 ind = sub2ind( [h,w], round(y), round(x) );
 keep = keep(camera.Silhouette(ind) >= 1);
-
+if (~isempty(keep))
 voxels.XData = voxels.XData(keep);
 voxels.YData = voxels.YData(keep);
 voxels.ZData = voxels.ZData(keep);
 voxels.Value = voxels.Value(keep);
+end

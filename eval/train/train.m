@@ -1,9 +1,11 @@
 % training
 clear, clc, close all;
 addpath(genpath('../../algo'));
+addpath('../include');
+addpath('../io');
 
 obj_name = 'sphere';
-algs = {'mvs'};
+algs = {'ps', 'mvs', 'sl', 'sc'};
 props = {'tex', 'alb', 'spec', 'rough', 'concav'};
 alg_prop = logical([0, 1, 1, 1, 0; 1, 1, 1, 0, 0; 0, 1, 1, 1, 0]);
 pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
@@ -15,7 +17,7 @@ run_alg = 1;
 run_eval = 1;
 run_eval_ps = 0;
 
-for aa = 1 : numel(algs)
+for aa = 4 : numel(algs)
 
 % ind = find(alg_prop(aa, :));
 % eff_props = sprintf('%s_%s_%s', props{ind(1)}, props{ind(2)}, props{ind(3)});
@@ -97,8 +99,8 @@ end
 
 %% Run Space carving
 case 'sc'
-idir = rdir;
-cdir = fullfile(fileparts(fileparts(mfilename('fullpath'))), 'CamData');
+idir = sprintf('%s/train/sc', rdir);
+cdir = fullfile(fileparts(fileparts(fileparts(mfilename('fullpath')))), 'algo/CamData');
 if(run_alg || ~exist(sprintf('%s/%s_sc.ply', idir, obj_name), 'file'))
     space_carving_syn;
 end

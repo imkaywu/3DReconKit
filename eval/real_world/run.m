@@ -1,6 +1,8 @@
 % pairwise property dependency checking
 clear, clc, close all;
 addpath(genpath('../../algo/'));
+addpath('../include');
+addpath('../io');
 
 obj_names = {'box', 'cat0', 'cat1', 'cup', 'dino', 'house', 'pot', 'statue', 'vase'};
 algs = {'ps', 'mvs', 'sl', 'sc'};
@@ -64,7 +66,7 @@ end
 case 'sc'
 idir = sprintf('%s/vh/%s', rdir, obj_name);
 cdir = sprintf('%s/vh/%s/txt', rdir, obj_name);
-if(run_alg || ~exist(sprintf('%s/%s_sc.ply', idir, obj_name), 'file'))
+if(run_alg || ~exist(sprintf('%s/models/%s_sc.ply', idir, obj_name), 'file'))
     space_carving_real;
 end
 

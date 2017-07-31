@@ -16,6 +16,7 @@ end
 vertices = get( ptch, 'Vertices' );
 normals = get( ptch, 'VertexNormals' );
 num_vertices = size( vertices, 1 );
+[h, w] = size(cameras(1).Silhouette);
 
 % Get the view vector for each camera
 num_cameras = numel( cameras );
@@ -30,11 +31,17 @@ vertexcdata = zeros( num_vertices, 3 );
 for ii=1:num_vertices
     % Use the dot product to find the best camera
     angles = normals(ii,:)*cam_normals./norm(normals(ii,:));
-    [~,cam_idx] = min( angles );
-    % Now project the vertex into the chosen camera
-    [imx,imy] = spacecarving.project( cameras(cam_idx), ...
-        vertices(ii,1), vertices(ii,2), vertices(ii,3) );
-    vertexcdata(ii,:) = double( cameras(cam_idx).Image( round(imy), round(imx), : ) )/255;
+    while(1)
+        [~,cam_idx] = min( angles );
+        angles(cam_idx) = 360;
+        % Now project the vertex into the chosen camera
+        [imx,imy] = spacecarving.project( cameras(cam_idx), ...
+            vertices(ii,1), vertices(ii,2), vertices(ii,3) );
+        if (imx >= 1 && imx <= w && imy >= 1 && imy <= h)
+            vertexcdata(ii,:) = double( cameras(cam_idx).Image( round(imy), round(imx), : ) )/255;
+            break;
+        end
+    end
 end
 
 % Set it into the patch
