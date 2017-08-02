@@ -62,239 +62,239 @@ legends = cell(2 * nplots, 1);
 
 %% plot mvs
 % x-axis: text, line: alb, plot: spec
-labels = {props{1}, props{2}, props{3}};
-for i = 1 : 3 % plot
-    fig = figure;
-    for j = 1 : 3 % line
-        p(j) = semilogy(ind ./ 10, mvs_acc_mat(:, j, i), 'ro-'); hold on;
-        set(p(j), 'LineWidth', 1.5, 'Color', color(j, :));
-        legends{j} = sprintf('%0.2f', ind(j)/10);
-        p(j + nplots) = semilogy(ind ./ 10, mvs_cmplt_mat(:, j, i), 'ro--'); hold on;
-        set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
-        legends{2 * j} = sprintf('%0.2f', ind(j)/10);
-    end
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
-    xlabel(labels{1}, 'FontSize', 24);
-    ylabel('accuracy/completeness', 'FontSize', 24);
-    xlim([0, 1]);
-    l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
-    set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
-    l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
-    set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
-    [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
-            'anchor', {'ne','se'}, ...
-            'buffer', [0 -20], ...
-            'fontsize', 8', ...
-            'title', 'Line');
-    [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
-        legendflex(p(1 : nplots), legends(1 : nplots), ...
-            'ref', hl(1).leg, ...
-            'anchor', {'se','ne'}, ...
-            'buffer', [0 0], ...
-            'fontsize',8, ...
-            'xscale',0.5, ...
-            'title', sprintf('%s', labels{2}));
-    saveas(fig, sprintf('%s/result/mvs_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-%     saveas(fig, sprintf('%s/result/train/mvs_train_%s_%02d.png', rdir, labels{3}, ind(i)));
-    close(fig);
-end
-
-% x-axis: alb, line: spec, plot: texture
-labels = {props{2}, props{3}, props{1}};
-for i = 1 : 3 % plot
-    fig = figure;
-    for j = 1 : 3 % line
-        p(j) = semilogy(ind ./ 10, mvs_acc_mat(i, :, j), 'ro-'); hold on;
-        set(p(j), 'LineWidth', 1.5, 'Color', color(j, :));
-        legends{j} = sprintf('%0.2f', ind(j)/10);
-        p(j + nplots) = semilogy(ind ./ 10, mvs_cmplt_mat(i, :, j), 'ro--'); hold on;
-        set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
-        legends{j + nplots} = sprintf('%0.2f', ind(j)/10);
-    end
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
-    xlabel(labels{1}, 'FontSize', 24);
-    ylabel('accuracy/completeness', 'FontSize', 24);
-    xlim([0, 1]);
-    l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
-    set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
-    l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
-    set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
-    [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
-            'anchor', {'ne','se'}, ...
-            'buffer', [0 -20], ...
-            'fontsize', 8', ...
-            'title', 'Line');
-    [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
-        legendflex(p(1 : nplots), legends(1 : nplots), ...
-            'ref', hl(1).leg, ...
-            'anchor', {'se','ne'}, ...
-            'buffer', [0 0], ...
-            'fontsize',8, ...
-            'xscale',0.5, ...
-            'title', sprintf('%s', labels{2}));
-    saveas(fig, sprintf('%s/result/mvs_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-%     saveas(fig, sprintf('%s/result/train/mvs_train_%s_%02d.png', rdir, labels{3}, ind(i)));
-    close(fig);
-end
-
-% x-axis: spec, line: texture, plot: alb
-labels = {props{3}, props{1}, props{2}};
-for i = 1 : 3 % plot
-    fig = figure;
-    for j = 1 : 3 % line
-        p(j) = semilogy(ind ./ 10, reshape(mvs_acc_mat(j, i, :), 3, 1), 'ro-'); hold on;
-        set(p(j), 'LineWidth', 1.5, 'Color', color(j, :));
-        legends{j} = sprintf('%0.2f', ind(j)/10);
-        p(j + nplots) = semilogy(ind ./ 10, reshape(mvs_cmplt_mat(j, i, :), 3, 1), 'ro--'); hold on;
-        set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
-        legends{j + nplots} = sprintf('%0.2f', ind(j)/10);
-    end
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
-    xlabel(labels{1}, 'FontSize', 24);
-    ylabel('accuracy/completeness', 'FontSize', 24);
-    xlim([0, 1]);
-    l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
-    set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
-    l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
-    set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
-    [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
-            'anchor', {'ne','se'}, ...
-            'buffer', [0 -20], ...
-            'fontsize', 8', ...
-            'title', 'Line');
-    [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
-        legendflex(p(1 : nplots), legends(1 : nplots), ...
-            'ref', hl(1).leg, ...
-            'anchor', {'se','ne'}, ...
-            'buffer', [0 0], ...
-            'fontsize',8, ...
-            'xscale',0.5, ...
-            'title', sprintf('%s', labels{2}));
-    saveas(fig, sprintf('%s/result/mvs_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-%     saveas(fig, sprintf('%s/result/train/mvs_train_%s_%02d.png', rdir, labels{3}, ind(i)));
-    close(fig);
-end
-
-%% plot sl
-% x-axis: alb, line: spec, plot: rough
-labels = {props{2}, props{3}, props{4}};
-for i = 1 : 3 % plot
-    fig = figure;
-    for j = 1 : 3 % line
-        p(j) = semilogy(ind ./ 10, sl_acc_mat(:, j, i), 'ro-'); hold on;
-        set(p(j), 'LineWidth', 1.5, 'Color', color(j, :));
-        legends{j} = sprintf('%0.2f', ind(j)/10);
-        p(j + nplots) = semilogy(ind ./ 10, sl_cmplt_mat(:, j, i), 'ro--'); hold on;
-        set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
-        legends{2 * j} = sprintf('%0.2f', ind(j)/10);
-    end
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
-    xlabel(labels{1}, 'FontSize', 24);
-    ylabel('accuracy/completeness', 'FontSize', 24);
-    xlim([0, 1]);
-    l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
-    set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
-    l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
-    set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
-    [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
-            'anchor', {'ne','se'}, ...
-            'buffer', [0 -20], ...
-            'fontsize', 8', ...
-            'title', 'Line');
-    [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
-        legendflex(p(1 : nplots), legends(1 : nplots), ...
-            'ref', hl(1).leg, ...
-            'anchor', {'se','ne'}, ...
-            'buffer', [0 0], ...
-            'fontsize',8, ...
-            'xscale',0.5, ...
-            'title', sprintf('%s', labels{2}));
-    saveas(fig, sprintf('%s/result/sl_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-%     saveas(fig, sprintf('%s/result/train/sl_train_%s_%02d.png', rdir, labels{3}, ind(i)));
-    close(fig);
-end
-
-% x-axis: spec, line: rough, plot: alb
-labels = {props{3}, props{4}, props{2}};
-for i = 1 : 3 % plot
-    fig = figure;
-    for j = 1 : 3 % line
-        p(j) = semilogy(ind ./ 10, sl_acc_mat(i, :, j), 'ro-'); hold on;
-        set(p(j), 'LineWidth', 1.5, 'Color', color(j, :));
-        legends{j} = sprintf('%0.2f', ind(j)/10);
-        p(j + nplots) = semilogy(ind ./ 10, sl_cmplt_mat(i, :, j), 'ro--'); hold on;
-        set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
-        legends{j + nplots} = sprintf('%0.2f', ind(j)/10);
-    end
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
-    xlabel(labels{1}, 'FontSize', 24);
-    ylabel('accuracy/completeness', 'FontSize', 24);
-    xlim([0, 1]);
-    l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
-    set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
-    l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
-    set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
-    [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
-            'anchor', {'ne','se'}, ...
-            'buffer', [0 -20], ...
-            'fontsize', 8', ...
-            'title', 'Line');
-    [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
-        legendflex(p(1 : nplots), legends(1 : nplots), ...
-            'ref', hl(1).leg, ...
-            'anchor', {'se','ne'}, ...
-            'buffer', [0 0], ...
-            'fontsize',8, ...
-            'xscale',0.5, ...
-            'title', sprintf('%s', labels{2}));
-    saveas(fig, sprintf('%s/result/sl_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-%     saveas(fig, sprintf('%s/result/train/sl_train_%s_%02d.png', rdir, labels{3}, ind(i)));
-    close(fig);
-end
-
-% x-axis: rough, line: alb, plot: spec
-labels = {props{4}, props{2}, props{3}};
-for i = 1 : 3 % plot
-    fig = figure;
-    for j = 1 : 3 % line
-        p(j) = semilogy(ind ./ 10, reshape(sl_acc_mat(j, i, :), 3, 1), 'ro-'); hold on;
-        set(p(j), 'LineWidth', 1.5, 'Color', color(j, :));
-        legends{j} = sprintf('%0.2f', ind(j)/10);
-        p(j + nplots) = semilogy(ind ./ 10, reshape(sl_cmplt_mat(j, i, :), 3, 1), 'ro--'); hold on;
-        set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
-        legends{j + nplots} = sprintf('%0.2f', ind(j)/10);
-    end
-    title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
-    xlabel(labels{1}, 'FontSize', 24);
-    ylabel('accuracy/completeness', 'FontSize', 24);
-    xlim([0, 1]);
-    l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
-    set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
-    l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
-    set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
-    [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
-        legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
-            'anchor', {'ne','se'}, ...
-            'buffer', [0 -20], ...
-            'fontsize', 8', ...
-            'title', 'Line');
-    [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
-        legendflex(p(1 : nplots), legends(1 : nplots), ...
-            'ref', hl(1).leg, ...
-            'anchor', {'se','ne'}, ...
-            'buffer', [0 0], ...
-            'fontsize',8, ...
-            'xscale',0.5, ...
-            'title', sprintf('%s', labels{2}));
-    saveas(fig, sprintf('%s/result/sl_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
-%     saveas(fig, sprintf('%s/result/train/sl_train_%s_%02d.png', rdir, labels{3}, ind(i)));
-    close(fig);
-end
+% labels = {props{1}, props{2}, props{3}};
+% for i = 1 : 3 % plot
+%     fig = figure;
+%     for j = 1 : 3 % line
+%         p(j) = semilogy(ind ./ 10, mvs_acc_mat(:, j, i), 'ro-'); hold on;
+%         set(p(j), 'LineWidth', 1.5, 'Color', color(j, :));
+%         legends{j} = sprintf('%0.2f', ind(j)/10);
+%         p(j + nplots) = semilogy(ind ./ 10, mvs_cmplt_mat(:, j, i), 'ro--'); hold on;
+%         set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
+%         legends{2 * j} = sprintf('%0.2f', ind(j)/10);
+%     end
+%     title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
+%     xlabel(labels{1}, 'FontSize', 24);
+%     ylabel('accuracy/completeness', 'FontSize', 24);
+%     xlim([0, 1]);
+%     l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
+%     set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
+%     l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
+%     set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
+%     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
+%         legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
+%             'anchor', {'ne','se'}, ...
+%             'buffer', [0 -20], ...
+%             'fontsize', 8', ...
+%             'title', 'Line');
+%     [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
+%         legendflex(p(1 : nplots), legends(1 : nplots), ...
+%             'ref', hl(1).leg, ...
+%             'anchor', {'se','ne'}, ...
+%             'buffer', [0 0], ...
+%             'fontsize',8, ...
+%             'xscale',0.5, ...
+%             'title', sprintf('%s', labels{2}));
+%     saveas(fig, sprintf('%s/result/mvs_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+% %     saveas(fig, sprintf('%s/result/train/mvs_train_%s_%02d.png', rdir, labels{3}, ind(i)));
+%     close(fig);
+% end
+% 
+% % x-axis: alb, line: spec, plot: texture
+% labels = {props{2}, props{3}, props{1}};
+% for i = 1 : 3 % plot
+%     fig = figure;
+%     for j = 1 : 3 % line
+%         p(j) = semilogy(ind ./ 10, mvs_acc_mat(i, :, j), 'ro-'); hold on;
+%         set(p(j), 'LineWidth', 1.5, 'Color', color(j, :));
+%         legends{j} = sprintf('%0.2f', ind(j)/10);
+%         p(j + nplots) = semilogy(ind ./ 10, mvs_cmplt_mat(i, :, j), 'ro--'); hold on;
+%         set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
+%         legends{j + nplots} = sprintf('%0.2f', ind(j)/10);
+%     end
+%     title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
+%     xlabel(labels{1}, 'FontSize', 24);
+%     ylabel('accuracy/completeness', 'FontSize', 24);
+%     xlim([0, 1]);
+%     l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
+%     set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
+%     l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
+%     set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
+%     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
+%         legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
+%             'anchor', {'ne','se'}, ...
+%             'buffer', [0 -20], ...
+%             'fontsize', 8', ...
+%             'title', 'Line');
+%     [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
+%         legendflex(p(1 : nplots), legends(1 : nplots), ...
+%             'ref', hl(1).leg, ...
+%             'anchor', {'se','ne'}, ...
+%             'buffer', [0 0], ...
+%             'fontsize',8, ...
+%             'xscale',0.5, ...
+%             'title', sprintf('%s', labels{2}));
+%     saveas(fig, sprintf('%s/result/mvs_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+% %     saveas(fig, sprintf('%s/result/train/mvs_train_%s_%02d.png', rdir, labels{3}, ind(i)));
+%     close(fig);
+% end
+% 
+% % x-axis: spec, line: texture, plot: alb
+% labels = {props{3}, props{1}, props{2}};
+% for i = 1 : 3 % plot
+%     fig = figure;
+%     for j = 1 : 3 % line
+%         p(j) = semilogy(ind ./ 10, reshape(mvs_acc_mat(j, i, :), 3, 1), 'ro-'); hold on;
+%         set(p(j), 'LineWidth', 1.5, 'Color', color(j, :));
+%         legends{j} = sprintf('%0.2f', ind(j)/10);
+%         p(j + nplots) = semilogy(ind ./ 10, reshape(mvs_cmplt_mat(j, i, :), 3, 1), 'ro--'); hold on;
+%         set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
+%         legends{j + nplots} = sprintf('%0.2f', ind(j)/10);
+%     end
+%     title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
+%     xlabel(labels{1}, 'FontSize', 24);
+%     ylabel('accuracy/completeness', 'FontSize', 24);
+%     xlim([0, 1]);
+%     l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
+%     set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
+%     l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
+%     set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
+%     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
+%         legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
+%             'anchor', {'ne','se'}, ...
+%             'buffer', [0 -20], ...
+%             'fontsize', 8', ...
+%             'title', 'Line');
+%     [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
+%         legendflex(p(1 : nplots), legends(1 : nplots), ...
+%             'ref', hl(1).leg, ...
+%             'anchor', {'se','ne'}, ...
+%             'buffer', [0 0], ...
+%             'fontsize',8, ...
+%             'xscale',0.5, ...
+%             'title', sprintf('%s', labels{2}));
+%     saveas(fig, sprintf('%s/result/mvs_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+% %     saveas(fig, sprintf('%s/result/train/mvs_train_%s_%02d.png', rdir, labels{3}, ind(i)));
+%     close(fig);
+% end
+% 
+% %% plot sl
+% % x-axis: alb, line: spec, plot: rough
+% labels = {props{2}, props{3}, props{4}};
+% for i = 1 : 3 % plot
+%     fig = figure;
+%     for j = 1 : 3 % line
+%         p(j) = semilogy(ind ./ 10, sl_acc_mat(:, j, i), 'ro-'); hold on;
+%         set(p(j), 'LineWidth', 1.5, 'Color', color(j, :));
+%         legends{j} = sprintf('%0.2f', ind(j)/10);
+%         p(j + nplots) = semilogy(ind ./ 10, sl_cmplt_mat(:, j, i), 'ro--'); hold on;
+%         set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
+%         legends{2 * j} = sprintf('%0.2f', ind(j)/10);
+%     end
+%     title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
+%     xlabel(labels{1}, 'FontSize', 24);
+%     ylabel('accuracy/completeness', 'FontSize', 24);
+%     xlim([0, 1]);
+%     l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
+%     set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
+%     l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
+%     set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
+%     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
+%         legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
+%             'anchor', {'ne','se'}, ...
+%             'buffer', [0 -20], ...
+%             'fontsize', 8', ...
+%             'title', 'Line');
+%     [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
+%         legendflex(p(1 : nplots), legends(1 : nplots), ...
+%             'ref', hl(1).leg, ...
+%             'anchor', {'se','ne'}, ...
+%             'buffer', [0 0], ...
+%             'fontsize',8, ...
+%             'xscale',0.5, ...
+%             'title', sprintf('%s', labels{2}));
+%     saveas(fig, sprintf('%s/result/sl_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+% %     saveas(fig, sprintf('%s/result/train/sl_train_%s_%02d.png', rdir, labels{3}, ind(i)));
+%     close(fig);
+% end
+% 
+% % x-axis: spec, line: rough, plot: alb
+% labels = {props{3}, props{4}, props{2}};
+% for i = 1 : 3 % plot
+%     fig = figure;
+%     for j = 1 : 3 % line
+%         p(j) = semilogy(ind ./ 10, sl_acc_mat(i, :, j), 'ro-'); hold on;
+%         set(p(j), 'LineWidth', 1.5, 'Color', color(j, :));
+%         legends{j} = sprintf('%0.2f', ind(j)/10);
+%         p(j + nplots) = semilogy(ind ./ 10, sl_cmplt_mat(i, :, j), 'ro--'); hold on;
+%         set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
+%         legends{j + nplots} = sprintf('%0.2f', ind(j)/10);
+%     end
+%     title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
+%     xlabel(labels{1}, 'FontSize', 24);
+%     ylabel('accuracy/completeness', 'FontSize', 24);
+%     xlim([0, 1]);
+%     l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
+%     set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
+%     l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
+%     set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
+%     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
+%         legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
+%             'anchor', {'ne','se'}, ...
+%             'buffer', [0 -20], ...
+%             'fontsize', 8', ...
+%             'title', 'Line');
+%     [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
+%         legendflex(p(1 : nplots), legends(1 : nplots), ...
+%             'ref', hl(1).leg, ...
+%             'anchor', {'se','ne'}, ...
+%             'buffer', [0 0], ...
+%             'fontsize',8, ...
+%             'xscale',0.5, ...
+%             'title', sprintf('%s', labels{2}));
+%     saveas(fig, sprintf('%s/result/sl_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+% %     saveas(fig, sprintf('%s/result/train/sl_train_%s_%02d.png', rdir, labels{3}, ind(i)));
+%     close(fig);
+% end
+% 
+% % x-axis: rough, line: alb, plot: spec
+% labels = {props{4}, props{2}, props{3}};
+% for i = 1 : 3 % plot
+%     fig = figure;
+%     for j = 1 : 3 % line
+%         p(j) = semilogy(ind ./ 10, reshape(sl_acc_mat(j, i, :), 3, 1), 'ro-'); hold on;
+%         set(p(j), 'LineWidth', 1.5, 'Color', color(j, :));
+%         legends{j} = sprintf('%0.2f', ind(j)/10);
+%         p(j + nplots) = semilogy(ind ./ 10, reshape(sl_cmplt_mat(j, i, :), 3, 1), 'ro--'); hold on;
+%         set(p(j + nplots), 'LineWidth', 1.5, 'Color', color(j, :));
+%         legends{j + nplots} = sprintf('%0.2f', ind(j)/10);
+%     end
+%     title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24, 'FontWeight', 'bold');
+%     xlabel(labels{1}, 'FontSize', 24);
+%     ylabel('accuracy/completeness', 'FontSize', 24);
+%     xlim([0, 1]);
+%     l(1) = semilogy([0, 1], [bl_acc, bl_acc], '*-'); hold on;
+%     set(l(1), 'LineWidth', 1.5, 'Color', color(4, :));
+%     l(2) = semilogy([0, 1], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
+%     set(l(2), 'LineWidth', 1.5, 'Color', color(4, :));
+%     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
+%         legendflex([p([1, 1 + nplots]), l], {'accuracy', 'completeness', 'BL accuracy', 'BL completeness'}, ...
+%             'anchor', {'ne','se'}, ...
+%             'buffer', [0 -20], ...
+%             'fontsize', 8', ...
+%             'title', 'Line');
+%     [hl(2).leg, hl(2).obj, hl(2).hout, hl(2).mout] = ...
+%         legendflex(p(1 : nplots), legends(1 : nplots), ...
+%             'ref', hl(1).leg, ...
+%             'anchor', {'se','ne'}, ...
+%             'buffer', [0 0], ...
+%             'fontsize',8, ...
+%             'xscale',0.5, ...
+%             'title', sprintf('%s', labels{2}));
+%     saveas(fig, sprintf('%s/result/sl_train_%s_%02d.eps', rdir, labels{3}, ind(i)), 'epsc2');
+% %     saveas(fig, sprintf('%s/result/train/sl_train_%s_%02d.png', rdir, labels{3}, ind(i)));
+%     close(fig);
+% end
 
 %% plot ps
 % group means boxes with the same colour
@@ -314,7 +314,7 @@ for i = 1 : 3 % plot
     p = aboxplot(angle_plot, 'labels', [0.2 0.5, 0.8]);
     xlabel(labels{1}, 'FontSize', 24);
     ylabel('angle difference', 'FontSize', 24);
-    ylim([0, 45]);
+    ylim([0, 15]);
     title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24);
     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
         legendflex(p, legends, ...
@@ -343,7 +343,7 @@ for i = 1 : 3 % plot
     p = aboxplot(angle_plot, 'labels', [0.2 0.5, 0.8]);
     xlabel(labels{1}, 'FontSize', 24);
     ylabel('angle difference', 'FontSize', 24);
-    ylim([0, 45]);
+    ylim([0, 15]);
     title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24);
     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
         legendflex(p, legends, ...
@@ -372,7 +372,7 @@ for i = 1 : 3 % plot
     p = aboxplot(angle_plot, 'labels', [0.2 0.5, 0.8]);
     xlabel(labels{1}, 'FontSize', 24);
     ylabel('angle difference', 'FontSize', 24);
-    ylim([0, 45]);
+    ylim([0, 15]);
     title(sprintf('%s: %0.2f', labels{3}, ind(i)/10), 'FontSize', 24);
     [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
         legendflex(p, legends, ...

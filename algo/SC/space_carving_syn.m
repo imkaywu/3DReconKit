@@ -3,7 +3,7 @@
 %% Setup
 % All functions for this demo are in the "spacecarving" package and the
 % data in the "DinosaurData" folder.
-import spacecarving.*;
+% import spacecarving.*;
 close all;
 
 

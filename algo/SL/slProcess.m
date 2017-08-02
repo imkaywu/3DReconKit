@@ -16,14 +16,14 @@
 % 18 May 2009
 
 % Add required subdirectories.
-addpath('./utilities');
+% addpath('./utilities');
 
 % Reset Matlab environment.
 clc, close all;
 
 % Set structured lighting parameters.
 % objDir       = 'C:\Users\Admin\Documents\3D_Recon\Data\synthetic_data\sphere\sl\gt';
-calibDir     = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/groundtruth/calib_results/calib_cam_proj.mat';
+calibDir     = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/3DRecon_Algo_Eval/groundtruth/calib_results/calib_cam_proj.mat';
 % objName      = obj_name;   % object name (should correspond to a data dir.)
 % seqName      = 'v1';    % sequence name (subdirectory of object)
 seqType      = 'Gray';  % structured light sequence type ('Gray' or 'bin')

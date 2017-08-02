@@ -9,23 +9,23 @@ function [K,R,t] = decomposeP(P)
 %   Copyright 2005-2009 The MathWorks, Inc.
 %   $Revision: 1.0 $    $Date: 2006/06/30 00:00:00 $
 
-[K, R] = rq(P(1 : 3, 1 : 3));
-T = diag(sign(diag(K)));
-K = K * T;
-R = T * R;
-t = P(1 : 3, 4);
+% [K, R] = rq(P(1 : 3, 1 : 3));
+% T = diag(sign(diag(K)));
+% K = K * T;
+% R = T * R;
+% t = P(1 : 3, 4);
 
-% [q,r] = qr(inv(P(1:3,1:3)));
-% invK = r(1:3,1:3);
-% R = inv(q);
-% % A rotation matrix should have unity determinant, but QR only gaurantees
-% % a unitary matrix Q. Correct for sign here.
-% if det( R ) < 0
-%     R = -R;
-%     invK = -invK;
-% end
-% K = inv(invK);
-% t = invK*P(:,4);
+[q,r] = qr(inv(P(1:3,1:3)));
+invK = r(1:3,1:3);
+R = inv(q);
+% A rotation matrix should have unity determinant, but QR only gaurantees
+% a unitary matrix Q. Correct for sign here.
+if det( R ) < 0
+    R = -R;
+    invK = -invK;
+end
+K = inv(invK);
+t = invK*P(:,4);
 
 end
 

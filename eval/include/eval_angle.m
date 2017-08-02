@@ -28,7 +28,7 @@ for c = 1 : 3
 end
 clear norm_map
 
-prct = 0.9;
+prct = 0.95;
 dot_norm = dot(norm_gt, norm, 2);
 angle = (180 .* acos(dot_norm)) ./ pi;
 angle = real(angle);
@@ -49,7 +49,8 @@ fprintf('max angle: %.08f\n', max_ang);
 fprintf('min angle: %.08f\n', min_ang);
 fprintf('accuracy: %.08f\n', acc_ang);
 
-if(~exist([data.idir, '/result.txt'], 'file'))
+update_txt = 0;
+if(update_txt || ~exist([data.idir, '/result.txt'], 'file'))
     fid = fopen([data.idir, '/result.txt'], 'wt');
     fprintf(fid, 'mean angle: %.08f\nmedian angle: %.08f\nvar angle: %.08f\nstd angle: %.08f\nmax angle: %.08f\nmin angle: %.08f\naccuracy: %.08f\n', mean_ang, median_ang, var_ang, std_ang, max_ang, min_ang, acc_ang);
     fclose(fid);

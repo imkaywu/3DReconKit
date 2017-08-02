@@ -38,23 +38,42 @@ center{1} = floor(center{1});
 center{2} = floor(center{2});
 radius = floor(radius);
 
-img_tar = zeros(size(mask_tar, 1), size(mask_tar, 2), 3 * data.num_img, 'uint8');
-img_ref{1} = zeros(size(mask_ref{1}, 1), size(mask_ref{1}, 2), 3 * data.num_img, 'uint8');
-img_ref{2} = zeros(size(mask_ref{2}, 1), size(mask_ref{2}, 2), 3 * data.num_img, 'uint8');
+img_tar = zeros(size(mask_tar, 1), size(mask_tar, 2), 3 * data.num_img);
+img_ref{1} = zeros(size(mask_ref{1}, 1), size(mask_ref{1}, 2), 3 * data.num_img);
+img_ref{2} = zeros(size(mask_ref{2}, 1), size(mask_ref{2}, 2), 3 * data.num_img);
 
+NormalizePercentile = 99;
 for v = 1 : data.num_view % probably need to modify
 % n_map_tar{v} = zeros([size(mask_tar), 3]);
     
 ind_img = randperm(data.num_img);
 for i = 1 : data.num_img % reshuffle the image
     % target object
-    img_tar(:, :, 3 * (i - 1) + 1 : 3 * i) = imread(data.name_img_tar{ind_img(i)});
+    Itmp = im2double(imread(data.name_img_tar{ind_img(i)}));
+    for c = 1 : 3
+        Ic = Itmp(:, :, c);
+        Ic = Ic / prctile(Ic(:), NormalizePercentile);
+        Itmp(:, :, c) = Ic;
+    end
+    img_tar(:, :, 3 * (i - 1) + 1 : 3 * i) = Itmp;
     
     % specular object
-    img_ref{1}(:, :, 3 * (i - 1) + 1 : 3 * i) = imread(data.name_img_ref{ind_img(i), 1});
+    Itmp = im2double(imread(data.name_img_ref{ind_img(i), 1}));
+    for c = 1 : 3
+        Ic = Itmp(:, :, c);
+        Ic = Ic / prctile(Ic(:), NormalizePercentile);
+        Itmp(:, :, c) = Ic;
+    end
+    img_ref{1}(:, :, 3 * (i - 1) + 1 : 3 * i) = Itmp;
     
     % diffuse object
-    img_ref{2}(:, :, 3 * (i - 1) + 1 : 3 * i) = imread(data.name_img_ref{ind_img(i), 2});
+    Itmp = im2double(imread(data.name_img_ref{ind_img(i), 2}));
+    for c = 1 : 3
+        Ic = Itmp(:, :, c);
+        Ic = Ic / prctile(Ic(:), NormalizePercentile);
+        Itmp(:, :, c) = Ic;
+    end
+    img_ref{2}(:, :, 3 * (i - 1) + 1 : 3 * i) = Itmp;
 end
 
 % rearrange the image data so that the data is grouped by channel
@@ -80,11 +99,12 @@ OV_ref{1} = OV_ref{1}(:, OV_ref_ind{1});
 OV_ref_ind{2} = find(mask_ref{2}(:) > 0);
 OV_ref{2} = OV_ref{2}(:, OV_ref_ind{2});
 
-OV_tar = double(OV_tar);
-OV_ref{1} = double(OV_ref{1});
-OV_ref{2} = double(OV_ref{2});
+% no longer needed
+% OV_tar = double(OV_tar);
+% OV_ref{1} = double(OV_ref{1});
+% OV_ref{2} = double(OV_ref{2});
 
-% % normalized each channel separately
+% % normalized each channel separately, result not so good
 % for i = 1 : 3
 %     OV_tar_chan = OV_tar(1 + (i - 1) * data.num_img : i * data.num_img, :);
 %     OV_tar(1 + (i - 1) * data.num_img : i * data.num_img, :) = OV_tar_chan ./ repmat(sqrt(sum(OV_tar_chan.^2)), data.num_img, 1);
@@ -95,9 +115,9 @@ OV_ref{2} = double(OV_ref{2});
 % end
 
 % normalize the whole ov vector
-OV_tar = OV_tar ./ repmat(sqrt(sum(OV_tar.^2)), 3 * data.num_img, 1); % (3 x nimg) x npix
-OV_ref{1} = OV_ref{1} ./ repmat(sqrt(sum(OV_ref{1}.^2)), 3 * data.num_img, 1); % (3 x nimg) x npix
-OV_ref{2} = OV_ref{2} ./ repmat(sqrt(sum(OV_ref{2}.^2)), 3 * data.num_img, 1); % (3 x nimg) x npix
+% OV_tar = OV_tar ./ repmat(sqrt(sum(OV_tar.^2)), 3 * data.num_img, 1); % (3 x nimg) x npix
+% OV_ref{1} = OV_ref{1} ./ repmat(sqrt(sum(OV_ref{1}.^2)), 3 * data.num_img, 1); % (3 x nimg) x npix
+% OV_ref{2} = OV_ref{2} ./ repmat(sqrt(sum(OV_ref{2}.^2)), 3 * data.num_img, 1); % (3 x nimg) x npix
 
 %% generate normal samples
 num_samp = [150, 500, 3e3, 2e4, 4e4]; % add numel(OV_ref_ind)

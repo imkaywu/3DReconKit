@@ -81,7 +81,7 @@ clc;
 
 %% synthetic dataset
 data.update = 0;
-num = 24;
+num = 25;
 data.num_view = 1;
 data.num_img = num;
 data.num_ref = 2;

@@ -5,19 +5,19 @@ addpath('../include');
 addpath('../io');
 
 obj_name = 'sphere';
-algs = {'ps', 'mvs', 'sl', 'sc'};
+algs = {'ps', 'mvs', 'sl', 'sc', 'ls_ps'};
 props = {'tex', 'alb', 'spec', 'rough', 'concav'};
 alg_prop = logical([0, 1, 1, 1, 0; 1, 1, 1, 0, 0; 0, 1, 1, 1, 0]);
 pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
 tdir = sprintf('%s/3DRecon_Algo_Eval', pdir); % root directory of the boolbox
 rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
-ref_dir = sprintf('%s/ref_obj', pdir);
+ref_dir = sprintf('%s/3DRecon_Algo_Eval/algo/PS/ref_obj', pdir);
 % gt_dir = sprintf('%s/groundtruth', pdir);
 run_alg = 1;
-run_eval = 1;
-run_eval_ps = 0;
+run_eval = 0;
+run_eval_ps = 1;
 
-for aa = 4 : numel(algs)
+for aa = 1
 
 % ind = find(alg_prop(aa, :));
 % eff_props = sprintf('%s_%s_%s', props{ind(1)}, props{ind(2)}, props{ind(3)});
@@ -87,6 +87,19 @@ for ind_1 = 2 : 3 : 8
         end
     end
 end
+
+%% Run baseline PS
+case 'ls_ps'
+    idir = adir;
+    data.idir = idir;
+    data.rdir = rdir;
+    wait_for_existence(sprintf('%s/0024.jpg', idir), 'file', 10, 3600);
+    if(run_alg || ~exist(sprintf('%s/normal.png', idir), 'file'))
+        demoPSBox_baseline;
+    end
+    if(run_eval_ps || ~exist(sprintf('%s/result.txt', idir), 'file'))
+        eval_angle;
+    end
 
 %% Run VH
 case 'vh'

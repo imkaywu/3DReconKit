@@ -118,7 +118,7 @@ def project_by_object_utils(cam, point):
 if __name__ == "__main__":
     # Insert your camera name here
 
-    odir = './calib_results/txt'
+    odir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/3DRecon_Algo_Eval/groundtruth/calib_results/txt'
     nimages = len(bpy.data.objects) - 10; # 7 is hardcoded, objects other than camera
     if not os.path.exists(odir):
         os.makedirs(odir)

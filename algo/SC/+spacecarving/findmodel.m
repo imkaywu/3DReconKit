@@ -13,10 +13,10 @@ camera_positions = cat( 2, cameras.T );
 xlim = [min( camera_positions(1,:) ), max( camera_positions(1,:) )];
 ylim = [min( camera_positions(2,:) ), max( camera_positions(2,:) )];
 zlim = [min( camera_positions(3,:) ), max( camera_positions(3,:) )];
-if (diff(ylim) < diff(xlim))
-    ylim(1) = min(xlim(1), ylim(1));
-    ylim(2) = max(xlim(2), ylim(2));
-end
+% if (diff(ylim) < diff(xlim))
+%     ylim(1) = min(xlim(1), ylim(1));
+%     ylim(2) = max(xlim(2), ylim(2));
+% end
 
 % For the zlim we need to see where each camera is looking. 
 range = 0.6 * sqrt( diff( xlim ).^2 + diff( ylim ).^2 );
@@ -27,7 +27,7 @@ for ii=1:numel( cameras )
 end
 
 % Move the limits in a bit since the object must be inside the circle
-div = 1000;
+div = 4;
 xrange = diff( xlim );
 xlim = xlim + xrange/div*[1 -1];
 yrange = diff( ylim );

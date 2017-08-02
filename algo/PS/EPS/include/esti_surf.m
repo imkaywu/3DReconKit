@@ -19,7 +19,7 @@ show_surfNorm(img_tar, norm_map, 10);
 
 % write to normal map (color coded)
 norm_map_rgb = encode(norm_map, mask_tar);
-imwrite(norm_map_rgb, sprintf('%s/normal.png', data.dir));
+imwrite(norm_map_rgb, sprintf('%s/normal.png', data.idir));
 clear norm_map_rgb;
 
 % integrate the normal to get the surface

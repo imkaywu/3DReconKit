@@ -1,7 +1,7 @@
 % compare the performance of the training object and test object
 clear, clc, close all;
 addpath(genpath('../include'));
-obj_name = {'knight'};
+obj_name = {'cup', 'king', 'knight'};
 algs = {'ps', 'mvs', 'sl', 'sc'};
 props = {'tex', 'alb', 'spec', 'rough'}; 
 % alg_prop = logical([1, 1, 1, 0; 0, 1, 1, 1; 1, 0, 1, 1]); % order: mvs, ps, sl
@@ -87,7 +87,7 @@ ylim([0, 90]);
 ylabel('angle difference');
 suptitle(sprintf('%s: %02d%02d%02d%02d', obj_name{oo}, in_prop(pp, 1), in_prop(pp, 2), in_prop(pp, 3), in_prop(pp, 4)));
 
-odir = sprintf('%s/result', rdir);
+odir = sprintf('%s/result', fileparts(rdir));
 if ~exist(odir, 'dir')
     mkdir(odir);
 end
