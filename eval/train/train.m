@@ -5,7 +5,7 @@ addpath('../include');
 addpath('../io');
 
 obj_name = 'sphere';
-algs = {'ps', 'mvs', 'sl', 'sc', 'ls_ps'};
+algs = {'ps', 'mvs', 'sl', 'sc', 'ps_baseline'};
 props = {'tex', 'alb', 'spec', 'rough', 'concav'};
 alg_prop = logical([0, 1, 1, 1, 0; 1, 1, 1, 0, 0; 0, 1, 1, 1, 0]);
 pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
@@ -13,9 +13,9 @@ tdir = sprintf('%s/3DRecon_Algo_Eval', pdir); % root directory of the boolbox
 rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
 ref_dir = sprintf('%s/3DRecon_Algo_Eval/algo/PS/ref_obj', pdir);
 % gt_dir = sprintf('%s/groundtruth', pdir);
-run_alg = 1;
+run_alg = 0;
 run_eval = 0;
-run_eval_ps = 1;
+run_eval_ps = 0;
 
 for aa = 1
 
@@ -89,7 +89,7 @@ for ind_1 = 2 : 3 : 8
 end
 
 %% Run baseline PS
-case 'ls_ps'
+case 'ps_baseline'
     idir = adir;
     data.idir = idir;
     data.rdir = rdir;

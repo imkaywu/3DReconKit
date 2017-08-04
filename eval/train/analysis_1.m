@@ -11,7 +11,7 @@ rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
 ref_dir = sprintf('%s/ref_obj', pdir);
 ind = 2 : 3 : 8;
 
-cmplt_prct = 0.8;
+cmplt_prct = 0.8; % 0.6 used in test analysis
 mvs_acc_mat = zeros(3, 3, 3);
 mvs_cmplt_mat = zeros(3, 3, 3);
 sl_acc_mat = zeros(3, 3, 3);
@@ -41,7 +41,7 @@ for kk = 1 : numel(ind)
     data.rdir = rdir;
     data.idir = idir;
     eval_angle;
-    angle_cell{ii, jj, kk} = angle;
+    angle_cell{ii, jj, kk} = angle_prtl;
     clear norm_map
     
     % sc
@@ -49,6 +49,14 @@ for kk = 1 : numel(ind)
     fid = fopen(sprintf('%s/result.txt', idir));
     fscanf(fid, '%s', 1); bl_acc = fscanf(fid, '%f', 1);
     fscanf(fid, '%s', 1); bl_cmplt = fscanf(fid, '%f', 1);
+    
+    % ps_baseline
+    idir = sprintf('%s/train/ps_baseline', rdir);
+    data.rdir = rdir;
+    data.idir = idir;
+    eval_angle;
+    angle_mat = angle_prtl;
+    clear norm_map;
 
 end % end of ii
 
@@ -295,7 +303,7 @@ legends = cell(2 * nplots, 1);
 % %     saveas(fig, sprintf('%s/result/train/sl_train_%s_%02d.png', rdir, labels{3}, ind(i)));
 %     close(fig);
 % end
-
+% 
 %% plot ps
 % group means boxes with the same colour
 legends = cell(nplots, 1);
@@ -385,3 +393,13 @@ for i = 1 : 3 % plot
 %     saveas(fig, sprintf('%s/result/train/ps_%s_%02d.png', rdir, labels{3}, ind(i)));
     close(fig);
 end
+
+%% plot ps_baseline
+rnd = 100 + 1 .* randn(size(angle_mat));
+fig = aboxplot([angle_mat, rnd]);
+set(gca,'XTickLabel',{'baseline'})
+xlim([0.5, 1.5]);
+ylim([0, 15]);
+ylabel('angle difference', 'FontSize', 24);
+saveas(fig, sprintf('%s/result/ps_baseline.eps', rdir), 'epsc2');
+close(fig);

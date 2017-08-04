@@ -24,19 +24,15 @@ if (~exist('options', 'var'))   options = [];   end
 if (~isfield(options, 'ImageChannel'))   options.ImageChannel = 1;   end
 
 % Get image names and dimension.
-% imgFiles = dir(fullfile(imgDir, ['Image_*.' imgSuffix]));
-% nImgs = length(imgFiles);
-% I = imread(fullfile(imgDir, imgFiles(1).name));
-% [M, N, C] = size(I);
-
-M = 720; N = 1280;
-nImgs = 25;
+imgFiles = dir(fullfile(imgDir, ['00*.', imgSuffix]));
+nImgs = length(imgFiles);
+I = imread(fullfile(imgDir, imgFiles(1).name));
+[M, N, C] = size(I);
 
 % Load images.
 I = zeros(M, N, nImgs);
 for i = 1:nImgs
-%   Itmp = im2double(imread(fullfile(imgDir, imgFiles(i).name)));
-  Itmp = im2double(imread(sprintf('%s/%04d.jpg', imgDir, i - 1)));
+  Itmp = im2double(imread(fullfile(imgDir, imgFiles(i).name)));
   Itmp = Itmp(end:-1:1, :, options.ImageChannel);
   % Normalize over the a percentile.
   if (isfield(options, 'NormalizePercentile'))

@@ -22,7 +22,7 @@ L = textread(fullfile(gt_dir, 'light_directions.txt'));
 % Load images.
 loadOpts = struct('ImageChannel', imgChannel, ...
                   'NormalizePercentile', 99);
-I = PSLoadProcessedImages(idir, rawOutSuffix, loadOpts);
+I = PSLoadProcessedImages(idir, rawOutSuffix, loadOpts); % do a flipud
 nImgs = size(I, 3);
 % Create a shadow mask.
 shadow_mask = (I > shadowThresh);
@@ -42,9 +42,25 @@ fprintf(['Estimating normal vectors and albedo (without light strength ' ...
 % Evaluate normal estimate by intensity error.
 evalOpts = struct('Display', 1);
 Ierr = EvalNEstimateByIError(rho, n, I, shadow_mask, L, evalOpts);
-% write to color image
-n_rgb = encode(n, mask);
-imwrite(n_rgb, sprintf('%s/normal.png', idir));
+%{
+%% Estimate lighting strength.
+fprintf('Estimating lighting strength...\n');
+lsOpts = struct('nSamples', 1000);
+lambda = PSEstimateLightStrength(I, shadow_mask, L, lsOpts);
+L2 = repmat(lambda', [3 1]) .* L;
+
+[rho, n] = PhotometricStereo(I, shadow_mask, L2);
+Ierr = EvalNEstimateByIError(rho, n, I, shadow_mask, L2, evalOpts);
+
+%% Refine the lighting matrix.
+fprintf('Refine lighting direction and strength...\n');
+rlOpts = struct('nSamples', 1000);
+L = PSRefineLight(L, I, shadow_mask, rlOpts);
+dlmwrite(fullfile(topDir, 'refined_light.txt'), L, 'precision', '%20.16f');
+
+[rho, n] = PhotometricStereo(I, shadow_mask, L);
+Ierr = EvalNEstimateByIError(rho, n, I, shadow_mask, L, evalOpts);
+%}
 
 %% Visualize the normal map.
 figure; imshow(n); axis xy;
@@ -62,3 +78,10 @@ Z(isnan(n(:,:,1)) | isnan(n(:,:,2)) | isnan(n(:,:,3))) = NaN;
 surf(Z, 'EdgeColor', 'None', 'FaceColor', [0.5 0.5 0.5]);
 axis equal; camlight;
 view(-75, 30);
+
+%% write to color image
+% flip the normal map upside down and flip the sign of n_y
+n = n(end : -1 : 1, :, :);
+n(:, :, 2) = -n(:, :, 2);
+n_rgb = encode(n, mask);
+imwrite(n_rgb, sprintf('%s/normal.png', idir));

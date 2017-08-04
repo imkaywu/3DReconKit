@@ -1,14 +1,13 @@
 % compare the performance of the training object and test object
 clear, clc, close all;
 addpath(genpath('../include'));
-obj_name = {'cup', 'king', 'knight'};
-algs = {'ps', 'mvs', 'sl', 'sc'};
+obj_name = {'bottle', 'cup', 'king', 'knight'};
+algs = {'ps', 'mvs', 'sl', 'sc', 'ps_baseline'};
 props = {'tex', 'alb', 'spec', 'rough'}; 
-% alg_prop = logical([1, 1, 1, 0; 0, 1, 1, 1; 1, 0, 1, 1]); % order: mvs, ps, sl
 ind_prop = [2, 5, 8];
 in_prop = [2, 8, 2, 8; 2, 8, 5, 2; 8, 8, 2, 8; 8, 8, 5, 2];
 acc_cmplt_mat = zeros(2);
-cmplt_prct = 0.6;
+cmplt_prct = 0.6; % 0.8 used in train analysis
 color = [241, 90, 90;
          240, 196, 25;
          78, 186, 111;
@@ -37,8 +36,8 @@ idir = sprintf('%s/ps/%02d%02d%02d%02d', rdir, in_prop(pp, 1), in_prop(pp, 2), i
 data.rdir = rdir;
 data.idir = idir;
 eval_angle;
-angle_mat{2} = angle;
-clear norm_map
+angle_mat = angle_prtl;
+clear norm_map;
 
 case 'sl'
 idir = sprintf('%s/sl/%02d%02d%02d%02d', rdir, in_prop(pp, 1), in_prop(pp, 2), in_prop(pp, 3), in_prop(pp, 4));
@@ -52,6 +51,14 @@ fid = fopen(sprintf('%s/result.txt', idir));
 fscanf(fid, '%s', 1); bl_acc = fscanf(fid, '%f', 1);
 fscanf(fid, '%s', 1); bl_cmplt = fscanf(fid, '%f', 1);
 
+case 'ps_baseline'
+idir = sprintf('%s/ps_baseline', rdir);
+data.rdir = rdir;
+data.idir = idir;
+eval_angle;
+angle_bl_mat = angle_prtl;
+clear norm_map;
+
 end % end of switch
 
 end % end of alg
@@ -62,6 +69,9 @@ subplot(1, 2, 1);
 bar(acc_cmplt_mat'); hold on;
 legend('accuracy', 'completeness');
 set(gca,'XTickLabel',{'mvs', 'sl'})
+ylabel('accuracy/completeness');
+xlim([0, 3]);
+ylim([0, 1.0]);
 % for ii = 2
 %     % accuracy
 %     eval(['p' num2str(2 * ii - 1)]) = semilogy(ind_prop ./ 10, acc_mat(:, ii), 'ro-'); hold on;
@@ -72,18 +82,16 @@ set(gca,'XTickLabel',{'mvs', 'sl'})
 %     set(eval(['p' num2str(2 * ii)]), 'LineWidth', 3, 'Color', color(2 * ii - 1, :)/255);
 % end
 %     xlabel(prop_name{1});
-ylabel('accuracy/completeness');
-xlim([0, 3]);
-ylim([0, 1.0]);
 l(1) = plot([0, 3], [bl_acc, bl_acc], '*-'); hold on;
 set(l(1), 'LineWidth', 1.5, 'Color', color(4, :) / 255.0);
 l(2) = plot([0, 3], cmplt_prct*[bl_cmplt, bl_cmplt], '*--');
 set(l(2), 'LineWidth', 1.5, 'Color', color(4, :) / 255.0);
-    
+
 subplot(1, 2, 2);
-aboxplot([angle_mat{2}, zeros(numel(angle_mat{2}), 1)], 'label', [1, 2]);
-xlim([0.5, 1.5]);
-ylim([0, 90]);
+aboxplot([angle_mat, angle_bl_mat]);
+set(gca,'XTickLabel',{'EPS', 'baseline'})
+xlim([0, 3]);
+ylim([0, 30]);
 ylabel('angle difference');
 suptitle(sprintf('%s: %02d%02d%02d%02d', obj_name{oo}, in_prop(pp, 1), in_prop(pp, 2), in_prop(pp, 3), in_prop(pp, 4)));
 

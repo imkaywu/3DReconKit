@@ -1,1 +1,2 @@
-mex mex_normal_esti_coarse2fine_ps.cpp normal_esti_coarse2fine_ps.cpp nnls.c -I./ -I<opencv_dir> -I<Eigen_parent_dir> -L<opencv_lib_dir> -lopencv_highguixxxx -lopencv_imgprocxxxx -output normal_esti_coarse2fine_ps
+% mex mex_normal_esti_coarse2fine_ps.cpp normal_esti_coarse2fine_ps.cpp nnls.c -I./ -I<opencv_dir> -I<Eigen_parent_dir> -L<opencv_lib_dir> -lopencv_highguixxxx -lopencv_imgprocxxxx -output normal_esti_coarse2fine_ps
+mex mex_normal_esti_coarse2fine_ps.cpp normal_esti_coarse2fine_ps.cpp nnls.c -I./ -IC:/opencv/build/include/ -IC:/Users/Admin/Documents/Resource/ -LC:/opencv/build/x86/vc11/lib -lopencv_highgui2411 -lopencv_imgproc2411 -output normal_esti_coarse2fine_ps

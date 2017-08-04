@@ -3,7 +3,7 @@
 %% Setup
 % All functions for this demo are in the "spacecarving" package and the
 % data in the "DinosaurData" folder.
-% import spacecarving.*;
+import spacecarving.*;
 close all;
 
 
@@ -34,16 +34,17 @@ for c=1:numel(cameras)
 end
 
 figure('Position',[100 100 600 300]);
+montage(cat(4, cameras.Silhouette));
 
-subplot(1,2,1)
-imshow( cameras(c).Image );
-title( 'Original Image' )
-axis off
-
-subplot(1,2,2)
-imshow( cameras(c).Silhouette );
-title( 'Silhouette' )
-axis off
+% subplot(1,2,1)
+% imshow( cameras(c).Image );
+% title( 'Original Image' )
+% axis off
+% 
+% subplot(1,2,2)
+% imshow( cameras(c).Silhouette );
+% title( 'Silhouette' )
+% axis off
 
 makeFullAxes( gcf );
 
@@ -81,6 +82,8 @@ starting_volume = numel( voxels.XData );
 % more - the only limit being time and disk-space. When using a computer
 % controlled turn-table (as is done in museums) storage is the only real
 % limitation.
+% index = [0 : 25, 27 : 29, 31, 32, 35, 36, 39, 40] + 1; % bottle
+% index = [0 : 13, 16 : 24, 28, 30, 32, 35, 36, 39, 40] + 1; % king
 for ii=1:numel(cameras)
     voxels = carve( voxels, cameras(ii) );
 end

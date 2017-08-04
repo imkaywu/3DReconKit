@@ -27,19 +27,20 @@ for c = 1 : 3
     norm(:, c) = norm_tmp(mask == 1);
 end
 clear norm_map
-
-prct = 0.95;
+prtlprct = 0.99; % get rid of the extream angle difference
+accprct = 0.95;
 dot_norm = dot(norm_gt, norm, 2);
 angle = (180 .* acos(dot_norm)) ./ pi;
 angle = real(angle);
 angle_sort = sort(angle);
-acc_ang = angle_sort(round(prct * numel(angle)));
-mean_ang = mean(angle);
-median_ang = median(angle);
-var_ang = var(angle);
-std_ang = std(angle);
-min_ang = min(angle);
-max_ang = max(angle);
+angle_prtl = angle_sort(1 : round(prtlprct * numel(angle)));
+acc_ang = angle_sort(round(accprct * numel(angle_prtl)));
+mean_ang = mean(angle_prtl);
+median_ang = median(angle_prtl);
+var_ang = var(angle_prtl);
+std_ang = std(angle_prtl);
+min_ang = min(angle_prtl);
+max_ang = max(angle_prtl);
 
 fprintf('mean angle: %.08f\n', mean_ang);
 fprintf('median angle: %.08f\n', median_ang);

@@ -12,13 +12,12 @@
 void esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_ind, vector<VectorXi> &OV_ref_ind, Vector2i &size_tar, vector<Vector2i> &size_ref, vector<Vector2d, Eigen::aligned_allocator<Vector2d> > &center, vector<double> &radius, double* norm_map)
 {
     const int N = 5; // level of sampling
-    const int M = 3; // choose the best M centers
+    const int M = 6; // choose the best M centers
     const int num_img = static_cast<int>(OV_tar.cols()) / 3;
     const int num_ref = static_cast<int>(OV_ref.size());
-    int num_samp[N] = {150, 500, 3000, 20000, 40000}; // , static_cast<int>(OV_ref_spec.rows())
-    double btwn_ang_last_iter[N] = {180, 10, 5, 3, 1}; // , 0.5
-    Vector3d view_dir;
-    view_dir << 0, 0, 1;
+    int num_samp[N] = {150, 500, 3000, 20000, 40000}; //80000 , static_cast<int>(OV_ref_spec.rows())
+    double btwn_ang_last_iter[N] = {180, 10, 5, 3, 1}; // 0.5
+    Vector3d view_dir(0.0, 0.0, 1.0), norm_opt(0.0, 0.0, 1.0);
     
     vector<MatrixXd> normal_samp(N);
     
@@ -30,11 +29,12 @@ void esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_ind,
     
     for (int i = 0; i < static_cast<int>(OV_tar.rows()); ++i)
     {
-        // start of processing        
+        // start of processing
         VectorXd ov_tar = OV_tar.row(i);
         
         vector<Vector3d> c(1);
-        c[0] << 0, 0, 1;
+        c[0] = norm_opt; // use the last estimated normal as the initial guess
+        // c[0] << 0.0, 0.0, 1.0;
         vector<double> err_min(M);
         
         for (int j = 0; j < N; ++j)
@@ -61,6 +61,12 @@ void esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_ind,
                 for (int k = 0; k < num_norm; ++k)
                 {
                     Vector2d normal = normals[cc].block(0, k, 2, 1);
+                    // reason to flip n_x
+                    // (y)                (x) <----------|
+                    // ^                                 |
+                    // |                =>               |
+                    // |                                 |
+                    // |--------> (x)                    v (y)
                     normal(0) = -normal(0);
 
                     //Vector2d u;
@@ -114,12 +120,11 @@ void esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_ind,
                 if(j == 0) // first level of sampling, only 1 center
                 {
                     c.resize(M);
-                    c[0] = normals[0].col(err_ind[0]);
-                    c[1] = normals[0].col(err_ind[1]);
-                    c[2] = normals[0].col(err_ind[2]);
-                    err_min[0] = err_per_norm[err_ind[0]];
-                    err_min[1] = err_per_norm[err_ind[1]];
-                    err_min[2] = err_per_norm[err_ind[2]];
+                    for (int mm = 0; mm < M; ++mm)
+                    {
+                        c[mm] = normals[0].col(err_ind[mm]);
+                        err_min[mm] = err_per_norm[err_ind[mm]];
+                    }
                 }
                 else
                 {
@@ -132,13 +137,14 @@ void esti_norm(MatrixXd &OV_tar, vector<MatrixXd> &OV_ref, VectorXi &OV_tar_ind,
             }
         }
         vector<size_t> err_ind = sort_indexes(err_min);
-        Vector3d norm_opt = c[err_ind[0]];
+        norm_opt = c[err_ind[0]];
         //cout << "estimated normal: " << norm_opt << endl;
         norm_opt(0) = -norm_opt(0);
         norm_map[3 * i + 0] = norm_opt(0);
         norm_map[3 * i + 1] = norm_opt(1);
         norm_map[3 * i + 2] = norm_opt(2);
         
+        // drawing code
         //Mat img_tar, img_ref;
         //img_tar = imread(dir + "tar_11.png", CV_LOAD_IMAGE_COLOR);
         //img_ref = imread(dir + "ref_spec_37.png", CV_LOAD_IMAGE_COLOR);
