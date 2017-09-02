@@ -8,35 +8,35 @@ mask_ref{2} = imread(data.name_mask_ref{2});
 mask_ref{1}(mask_ref{1} > 0) = 1;
 mask_ref{2}(mask_ref{2} > 0) = 1;
 
-% for the online dataset
-% range_radius = [160, 180]; % the range of radius is a user-defined parameter [150, 180] for cat
-% center = cell(2, 1); radius = zeros(2, 1);
-% [center{1}, radius(1), ~] = imfindcircles(mask_ref{1}, range_radius);
-% [center{2}, radius(2), ~] = imfindcircles(mask_ref{2}, range_radius);
-
-% for my own dataset
-% fid = fopen([data.dir, 'data/mask.txt'], 'r');
-% % diffuse reference
-% str = textscan(fid, '%s', 1);
-% num = textscan(fid, '%d %d', 2); 
-% center{1} = double([num{1}(2), num{2}(2)]);
-% num = textscan(fid, '%f', 1);
-% radius(1) = num{1};
-% % specular reference
-% str = textscan(fid, '%s', 1);
-% num = textscan(fid, '%d %d', 2); 
-% center{2} = double([num{1}(2), num{2}(2)]);
-% num = textscan(fid, '%f', 1);
-% radius(2) = num{1};
-% fclose(fid);
-
-% for the synthetic dataset
 clear center radius;
-[center{1}, radius(1)] = imfindcircles(mask_ref{1}, [175, 185], 'Sensitivity', 0.99); % 'EdgeThreshold', 0.1: doesn't have much of an effect
-[center{2}, radius(2)] = imfindcircles(mask_ref{2}, [175, 185], 'Sensitivity', 0.99);
-center{1} = floor(center{1});
-center{2} = floor(center{2});
-radius = floor(radius);
+% use real-world dataset
+if strcmp(use_syn_real, 'REAL')
+    fid = fopen(sprintf('%s/mask.txt', data.idir), 'r');
+    line = fgetl(fid); line = fgetl(fid);
+    % diffuse reference
+    line = sscanf(fgetl(fid), '%f %f', [2, 1]);
+    center{1} = double([line(1), line(2)]);
+    line = sscanf(fgetl(fid), '%f', [1, 1]);
+    radius(1) = line(1);
+    
+    line = fgetl(fid);
+    line = fgetl(fid);
+    
+    % specular reference
+    line = sscanf(fgetl(fid), '%f %f', [2, 1]);
+    center{2} = double([line(1), line(2)]);
+    line = sscanf(fgetl(fid), '%f', [1, 1]);
+    radius(2) = line(1);
+    
+    fclose(fid);
+else
+% use the synthetic dataset
+    [center{1}, radius(1)] = imfindcircles(mask_ref{1}, [175, 185], 'Sensitivity', 0.99); % 'EdgeThreshold', 0.1: doesn't have much of an effect
+    [center{2}, radius(2)] = imfindcircles(mask_ref{2}, [175, 185], 'Sensitivity', 0.99);
+    center{1} = floor(center{1});
+    center{2} = floor(center{2});
+    radius = floor(radius);
+end
 
 img_tar = zeros(size(mask_tar, 1), size(mask_tar, 2), 3 * data.num_img);
 img_ref{1} = zeros(size(mask_ref{1}, 1), size(mask_ref{1}, 2), 3 * data.num_img);
@@ -99,36 +99,12 @@ OV_ref{1} = OV_ref{1}(:, OV_ref_ind{1});
 OV_ref_ind{2} = find(mask_ref{2}(:) > 0);
 OV_ref{2} = OV_ref{2}(:, OV_ref_ind{2});
 
-% no longer needed
-% OV_tar = double(OV_tar);
-% OV_ref{1} = double(OV_ref{1});
-% OV_ref{2} = double(OV_ref{2});
+% normalization schemes:
+% 1. normalized each channel separately, result not so good
+% 2. normalize the whole ov vector
+% 3. divided by the brighest non-specular pixel (currently used)
 
-% % normalized each channel separately, result not so good
-% for i = 1 : 3
-%     OV_tar_chan = OV_tar(1 + (i - 1) * data.num_img : i * data.num_img, :);
-%     OV_tar(1 + (i - 1) * data.num_img : i * data.num_img, :) = OV_tar_chan ./ repmat(sqrt(sum(OV_tar_chan.^2)), data.num_img, 1);
-%     OV_ref_chan = OV_ref{1}(1 + (i - 1) * data.num_img : i * data.num_img, :);
-%     OV_ref{1}(1 + (i - 1) * data.num_img : i * data.num_img, :) = OV_ref_chan ./ repmat(sqrt(sum(OV_ref_chan.^2)), data.num_img, 1);
-%     OV_ref_chan = OV_ref{2}(1 + (i - 1) * data.num_img : i * data.num_img, :);
-%     OV_ref{2}(1 + (i - 1) * data.num_img : i * data.num_img, :) = OV_ref_chan ./ repmat(sqrt(sum(OV_ref_chan.^2)), data.num_img, 1);
-% end
-
-% normalize the whole ov vector
-% OV_tar = OV_tar ./ repmat(sqrt(sum(OV_tar.^2)), 3 * data.num_img, 1); % (3 x nimg) x npix
-% OV_ref{1} = OV_ref{1} ./ repmat(sqrt(sum(OV_ref{1}.^2)), 3 * data.num_img, 1); % (3 x nimg) x npix
-% OV_ref{2} = OV_ref{2} ./ repmat(sqrt(sum(OV_ref{2}.^2)), 3 * data.num_img, 1); % (3 x nimg) x npix
-
-%% generate normal samples
-num_samp = [150, 500, 3e3, 2e4, 4e4]; % add numel(OV_ref_ind)
-num_cen = 3;
-btw_ang = [180, 20, 10, 5, 3] * pi / 180; % add 0.5
-view_dir = [0, 0, 1]';
-normal_samp = cell(numel(num_samp), 1);
-for i = 1 : numel(num_samp)
-    normal_samp{i} = gen_normals(num_samp(i), view_dir, 180);
-end
-
+%% surface normal estimation
 use_mex = 1;
 if use_mex
     size_tar = size(mask_tar)';
@@ -140,20 +116,30 @@ if use_mex
 else
 write2file = 0;
 if write2file
-% write data to text files
-if(~exist([data.dir, 'data/'], 'dir'))
-    mkdir([data.dir, 'data/']);
+    if(~exist([data.dir, 'data/'], 'dir'))
+        mkdir([data.dir, 'data/']);
+    end
+    if(~exist([data.dir, 'data/ov_tar.txt'], 'file') || data.update)
+        text_write([data.dir, 'data/ov_tar.txt'], OV_tar);
+        text_write([data.dir, 'data/ov_ref_1.txt'], OV_ref{1});
+        text_write([data.dir, 'data/ov_ref_2.txt'], OV_ref{2});
+        text_write([data.dir, 'data/ov_tar_ind.txt'], uint32(OV_tar_ind'));
+        text_write([data.dir, 'data/ov_ref_ind_1.txt'], uint32(OV_ref_ind{1}'));
+        text_write([data.dir, 'data/ov_ref_ind_2.txt'], uint32(OV_ref_ind{2}'));
+    end
 end
-if(~exist([data.dir, 'data/ov_tar.txt'], 'file') || data.update)
-    text_write([data.dir, 'data/ov_tar.txt'], OV_tar);
-    text_write([data.dir, 'data/ov_ref_1.txt'], OV_ref{1});
-    text_write([data.dir, 'data/ov_ref_2.txt'], OV_ref{2});
-    text_write([data.dir, 'data/ov_tar_ind.txt'], uint32(OV_tar_ind'));
-    text_write([data.dir, 'data/ov_ref_ind_1.txt'], uint32(OV_ref_ind{1}'));
-    text_write([data.dir, 'data/ov_ref_ind_2.txt'], uint32(OV_ref_ind{2}'));
+
+%% the code below is only for debugging purpose, the C++ implementation is used to make the computation faster
+
+% generate normal samples
+num_samp = [150, 500, 3e3, 2e4, 4e4]; % add numel(OV_ref_ind)
+num_cen = 3;
+btw_ang = [180, 20, 10, 5, 3] * pi / 180; % add 0.5
+view_dir = [0, 0, 1]';
+normal_samp = cell(numel(num_samp), 1);
+for i = 1 : numel(num_samp)
+    normal_samp{i} = gen_normals(num_samp(i), view_dir, 180);
 end
-end
-% the code below is only for debugging purpose
 for i = 600 : numel(OV_tar_ind)
     tic;
     ov_tar = OV_tar(:, i);

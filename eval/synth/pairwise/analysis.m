@@ -15,7 +15,7 @@ cmplt_mat = zeros(3, 3);
 angle_mat = [];
 legends = cell(2 * nplots, 1);
 
-for aa = 1 : numel(algs)
+for aa = 1
 
 adir = sprintf('%s/%s/pairwise/%s', pdir, obj_name, algs{aa});
 
@@ -45,7 +45,7 @@ case 'ps'
             data.rdir = rdir;
             data.idir = idir;
             eval_angle;
-            angle_mat = [angle_mat, angle];
+            angle_mat = [angle_mat, angle_prtl];
             clear norm_map
         end
     end
@@ -170,11 +170,11 @@ case 'ps'
     xlabel(props{ii}, 'FontSize', 24);
     ylabel('angle difference', 'FontSize', 24);
     title(sprintf('%s: %s and %s', algs{aa}, props{ii}, props{jj}), 'FontSize', 24, 'FontWeight', 'bold');
-    if(~exist(sprintf('%s/result/png', rdir), 'dir'))
-        mkdir(sprintf('%s/result/png', rdir));
+    if(~exist(sprintf('%s/result/0805', rdir), 'dir'))
+        mkdir(sprintf('%s/result/0805', rdir));
     end
 %     saveas(fig, sprintf('%s/%s/result/%s_%s.eps', rdir, obj_name, algs{aa}, prop_pair), 'epsc2');
-    saveas(fig, sprintf('%s/result/png/%s_%s.png', rdir, algs{aa}, prop_pair));
+    saveas(fig, sprintf('%s/result/0805/%s_%s.png', rdir, algs{aa}, prop_pair));
 end
 
 end % end of jj

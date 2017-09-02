@@ -27,7 +27,7 @@ for c = 1 : 3
     norm(:, c) = norm_tmp(mask == 1);
 end
 clear norm_map
-prtlprct = 0.99; % get rid of the extream angle difference
+prtlprct = 0.99; % get rid of the top 1% angle error
 accprct = 0.95;
 dot_norm = dot(norm_gt, norm, 2);
 angle = (180 .* acos(dot_norm)) ./ pi;

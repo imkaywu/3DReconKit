@@ -18,7 +18,6 @@ montage( cat( 4, cameras.Image ) );
 set( gcf(), 'Position', [100 100 600 600] )
 axis off;
 
-
 %% Convert the Images into Silhouettes
 % The image in each camera is converted to a binary image using the
 % blue-screen background and some morphological operators to clean up the
@@ -29,6 +28,7 @@ axis off;
 % <http://www.mathworks.com/access/helpdesk/help/toolbox/images/bwareaopen.html |bwareaopen|>
 % and <http://www.mathworks.com/access/helpdesk/help/toolbox/images/imclose.html |imclose|>
 % are your friends for this job!
+figure;
 for c=1:numel(cameras)
     cameras(c).Silhouette = chromakey(cameras(c).Image, 'white');
 end
@@ -37,8 +37,8 @@ figure('Position',[100 100 600 300]);
 montage( cat(4, cameras.Silhouette));
 title( 'Silhouette' )
 axis off;
-
 makeFullAxes( gcf );
+
 
 %% Work out the space occupied by the scene
 % Initially we have no idea where to look for the model. We will assume
@@ -47,9 +47,26 @@ makeFullAxes( gcf );
 % using all the cameras to narrow down exactly where the object is. This
 % isn't foolproof, but good enough for this demo.
 % [xlim,ylim,zlim] = findmodel( cameras );
-mdir = sprintf('%s/models', idir);
-[xlim,ylim,zlim] = bbox(mdir, obj_name);
 
+% if the above method doesn't work, 
+% use model generated from MVS to find the bounding box
+% mdir = sprintf('%s/models', idir);
+% [xlim,ylim,zlim] = bbox(mdir, obj_name);
+
+% manually find bounding box
+figure;
+set(gca,'DataAspectRatio',[1 1 1]);
+hold on;
+N = numel(cameras);
+for ii=1:N
+    showcamera(cameras(ii));
+end
+xlabel('X')
+ylabel('Y')
+zlabel('Z')
+xlim = [-2, 0];
+ylim = [-1.5, 0];
+zlim = [-3, -1];
 
 %% Create a Voxel Array
 % This creates a regular 3D grid of elements ready for carving away. The
@@ -88,6 +105,7 @@ title( 'Result after 36 carvings' )
 final_volume = numel( voxels.XData );
 fprintf( 'Final volume is %d (%1.2f%%)\n', ...
     final_volume, 100 * final_volume / starting_volume )
+
 
 %% Get real values
 % We ideally want much higher resolution, but would run out of memory.
@@ -136,6 +154,7 @@ set(gca,'Position',[-0.2 0 1.4 0.95])
 axis off
 title( 'Result after 36 carvings with refinement and colour' )
 writeply(sprintf('%s/%s_sc.ply', idir, obj_name), ptch.Vertices, ptch.VertexNormals, round(255 * ptch.FaceVertexCData), ptch.Faces);
+
 
 %% Conclusion
 % Hopefully this demo has given you a taste for what is possible by simple

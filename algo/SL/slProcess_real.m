@@ -14,6 +14,10 @@
 % Douglas Lanman and Gabriel Taubin 
 % Brown University
 % 18 May 2009
+% 
+% Modified by Kai Wu
+% University of British Columbia
+% 1 Sep 2017
 
 % Add required subdirectories.
 % addpath('./utilities');
@@ -22,27 +26,18 @@
 clc, close all;
 
 % Set structured lighting parameters.
-% objDir       = 'C:\Users\Admin\Documents\3D_Recon\Data\synthetic_data\sphere\sl\gt';
-calibDir     = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/3DRecon_Algo_Eval/groundtruth/calib_results/calib_cam_proj.mat';
-% objName      = obj_name;   % object name (should correspond to a data dir.)
+objDir       = idir;
+calibDir     = sprintf('%s/calib_cam_proj.mat', idir);
+objName      = obj_name;   % object name (should correspond to a data dir.)
 % seqName      = 'v1';    % sequence name (subdirectory of object)
 seqType      = 'Gray';  % structured light sequence type ('Gray' or 'bin')
 dSampleProj  = 1;       % downsampling factor (i.e., min. system resolution)
 projValue    = 255;     % Gray code intensity
-minContrast  = 0.1;     % minimum contrast threshold (for Gray code pattern)
-% switch ind_1
-%     case 2
-%         maxContrast = 0.9;
-%     case 5
-%         maxContrast = 0.8;
-%     case 8
-%         maxContrast = 0.7;
-% end
+maxContrast  = 0.5;
 
 % Set reconstruction parameters.
 dSamplePlot = 100;      % down-sampling rate for Matlab point cloud display
 distReject  = Inf;      % rejection distance (for outlier removal)
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Part I: Project Grey code sequence to recover illumination plane(s).
@@ -60,13 +55,14 @@ nBitPlanes = cell(1,nCam);
 camDim = cell(1,nCam);
 for camIdx = 1:nCam
    dataDir = objDir;
-   nBitPlanes{camIdx} = 10; %((length(dir(dataDir))-2)-2)/4;
-   I = imread(sprintf('%s/0000.jpg', dataDir));
-%    I = imread([dataDir,'0000.bmp']);
+   nBitPlanes{camIdx} = ((length(dir(dataDir))-2)-3)/4; % allone, allzero, ./, ../, calib_cam_proj.mat
+   I = imread(sprintf('%s/01.bmp', dataDir));
    camDim{camIdx} = [size(I,1) size(I,2)];
 end
-width = camDim{1}(2);
-height = camDim{1}(1);
+
+% projector dimension
+width = 1024;
+height = 768;
 
 % Generate vertical and horizontal Gray code stripe patterns.
 % Note: P{j} contains the Gray code patterns for "orientation" j.
@@ -87,18 +83,14 @@ for camIdx = 1:nCam
    if ~exist(dataDir,'dir')
       error([objDir, objName,'_',seqType,' is not available!']);
    end
-   T{1}{camIdx} = imread(sprintf('%s/%04d.jpg', dataDir, 40));
-   T{2}{camIdx} = imread(sprintf('%s/%04d.jpg', dataDir, 41));
-%    T{1}{camIdx} = imread([dataDir,num2str(41,'%0.04d'),'.bmp']);
-%    T{2}{camIdx} = imread([dataDir,num2str(40,'%0.04d'),'.bmp']);
-   frameIdx = 0;
+   T{1}{camIdx} = imread(sprintf('%s/%0.02d.bmp', dataDir, 1));
+   T{2}{camIdx} = imread(sprintf('%s/%0.02d.bmp', dataDir, 2));
+   frameIdx = 3; % first two are allone, allzero
    for j = 1:2 % column/row pattern
       for i = 1:nBitPlanes{camIdx} % index of bitplane
-         A{j,i}{camIdx} = imread(sprintf('%s/%04d.jpg', dataDir, frameIdx));
-%          A{j,i}{camIdx} = imread([dataDir,num2str(frameIdx,'%0.04d'),'.bmp']);
+         A{j,i}{camIdx} = imread(sprintf('%s/%0.02d.bmp', dataDir, frameIdx));
          frameIdx = frameIdx + 1;
-         B{j,i}{camIdx} = imread(sprintf('%s/%04d.jpg', dataDir, frameIdx));
-%          B{j,i}{camIdx} = imread([dataDir,num2str(frameIdx,'%0.04d'),'.bmp']);
+         B{j,i}{camIdx} = imread(sprintf('%s/%0.02d.bmp', dataDir, frameIdx));
          frameIdx = frameIdx + 1;
       end
    end
@@ -147,8 +139,6 @@ for k = 1:nCam
          grayAB = abs(grayA - grayB);
          grayAB_thresh = prctile(grayAB(:), prct);
          grayAB = grayAB ./ grayAB_thresh .* grayContrast_thresh;
-%          M{j,k}(grayAB > projValue * minContrast) = true;
-%          M{j,k}(grayAB > 0.95 * grayContrast & grayAB < 1.05 * grayContrast) = true;
          M{j,k}(grayAB > maxContrast * grayContrast_thresh) = true;
          imshow(M{j,k});
          
@@ -200,6 +190,7 @@ imagesc(T{1}{1}); axis image; colormap(jet(256));
 title('Reference Image for Texture Mapping'); drawnow;
 fprintf('number of pixel: %d, %d\n', sum(sum(~isnan(D{1, 1}))), sum(sum(~isnan(D{2, 1}))));
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Part II: Reconstruct surface using line-plane intersection.
 
@@ -229,11 +220,10 @@ for i = 1:length(Nc)
 end
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Part III: Display reconstruction results and export VRML model.
 
-% Display status.
+% Display result.
 disp('+ Displaying results and exporting VRML model...');
 
 % Display project/camera calibration results.
@@ -258,13 +248,9 @@ disp('+ Displaying results and exporting VRML model...');
 clear idx; mergedVertices = []; mergedColors = [];
 for i = 1:length(Nc)
    idx{i} = find(~isnan(vertices{i}(:,1)));
-   % transform to world coordinate system
-   tmp = Rc_1_cam{i}' * (vertices{i}(idx{i}, :)' - repmat(Tc_1_cam{i}, 1, numel(idx{i})));
+   tmp = Rc_1_cam{i}' * (vertices{i}(idx{i}, :)' - repmat(Tc_1_cam{i}, 1, numel(idx{i}))); % transform to world coordinate system
    tmp = tmp';
    writePly([objDir, '/', objName, '_', algs{aa}, '.ply'], tmp(:,[1 2 3]),colors{i}(idx{i},:));
-   
-%    vertices{i}(:,2) = -vertices{i}(:,2);
-%    writePly([objDir, '/', objName, '_', algs{aa}, '.ply'], vertices{i}(idx{i},[1 2 3]),colors{i}(idx{i},:));
    mergedVertices = [mergedVertices; vertices{i}(idx{i},[1 2 3])];
    mergedColors = [mergedColors; colors{i}(idx{i},:)];
 end

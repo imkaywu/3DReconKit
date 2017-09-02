@@ -10,10 +10,10 @@ rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
 ref_dir = sprintf('%s/3DRecon_Algo_Eval/algo/PS/ref_obj', pdir);
 % gt_dir = sprintf('%s/groundtruth', pdir);
 run_alg = 1;
-run_eval = 1;
-run_eval_ps = 0;
+run_eval = 0;
+run_eval_ps = 1;
 
-for aa = 1 : numel(algs)
+for aa = 1
 
 adir = sprintf('%s/%s/pairwise/%s', pdir, obj_name, algs{aa});
 
@@ -81,11 +81,11 @@ for ind_1 = 2 : 3 : 8
         data.rdir = rdir;
         data.ref_dir = ref_dir;
         data.obj_name = obj_name;
-        wait_for_existence(sprintf('%s/0024.jpg', data.dir), 'file', 10, 3600);
-        if(run_alg || ~exist(sprintf('%s/normal.png', data.dir), 'file'))
+        wait_for_existence(sprintf('%s/0024.jpg', data.idir), 'file', 10, 3600);
+        if(run_alg || ~exist(sprintf('%s/normal.png', data.idir), 'file'))
             main_ps;
         end
-        if(run_eval_ps || ~exist(sprintf('%s/result.txt', data.dir), 'file'))
+        if(run_eval_ps || ~exist(sprintf('%s/result.txt', data.idir), 'file'))
             eval_angle;
         end
     end

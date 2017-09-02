@@ -1,6 +1,5 @@
 % training
 clear, clc, close all;
-addpath(genpath('../../algo'));
 addpath('../include');
 addpath('../io');
 
@@ -14,18 +13,17 @@ rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
 ref_dir = sprintf('%s/3DRecon_Algo_Eval/algo/PS/ref_obj', pdir);
 % gt_dir = sprintf('%s/groundtruth', pdir);
 run_alg = 0;
-run_eval = 0;
+run_eval = 1;
 run_eval_ps = 0;
 
-for aa = 1
+for aa = 3 % 1 : numel(algs)
 
-% ind = find(alg_prop(aa, :));
-% eff_props = sprintf('%s_%s_%s', props{ind(1)}, props{ind(2)}, props{ind(3)});
 adir = sprintf('%s/%s/train/%s', pdir, obj_name, algs{aa});
 
 switch algs{aa}
 %% Run MVS
 case 'mvs'
+addpath(genpath('../../algo/MVS'));
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         for ind_3 = 2 : 3 : 8
@@ -50,18 +48,24 @@ end
 
 %% Run SL
 case 'sl'
+addpath(genpath('..\..\algo\SL'));
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         for ind_3 = 2 : 3 : 8
         idir = sprintf('%s/00%02d%02d%02d', adir, ind_1, ind_2, ind_3);
-        objDir = idir; % used in slProcess_syn
+        objDir = idir; % used in slProcess
         objName = obj_name;
         wait_for_existence(sprintf('%s/0041.jpg', idir), 'file', 10, 3600);
         if(run_alg || ~exist(sprintf('%s/%s_sl.ply', idir, obj_name), 'file'))
+%             ratio = ((ind_2 - 2) / 10 + 1) * ((ind_3 - 2) / 10 + 1);
             slProcess;
         end
         if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
             eval_acc_cmplt;
+            close all; fig = figure(1);
+            plot3(verts(1, :), verts(2, :), verts(3, :), 'k.'); hold on; plot3(verts_gt(1, :), verts_gt(2, :), verts_gt(3, :), 'r.'); view(0, 90); axis equal;
+            saveas(fig, sprintf('%s/sphere/result/sl_train/sl_00%02d%02d%02d.png', pdir, ind_1, ind_2, ind_3));
+            close(fig);
         end
         end
     end
@@ -69,6 +73,7 @@ end
 
 %% Run PS
 case 'ps'
+addpath(genpath('../../algo/PS'));
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         for ind_3 = 2 : 3 : 8

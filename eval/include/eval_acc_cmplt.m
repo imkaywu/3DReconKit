@@ -40,7 +40,7 @@ switch algs{aa}
         d_thre = 0.03;
     case 'sl'
         load C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/3DRecon_Algo_Eval/groundtruth/calib_results/calib_cam_proj.mat Rc_1_cam Tc_1_cam
-        [verts, ~] = ply_read_vc(sprintf('%s/%s_%s.ply', idir, objName, algs{aa}));
+        [verts, ~] = ply_read_vc(sprintf('%s/%s_%s.ply', idir, objName, algs{aa})); % wtf
 %         verts = Rc_1_cam{1}' * (verts - repmat(Tc_1_cam{1}, 1, size(verts, 2)));
         ind_rm = find(verts(1, :) < x_lim(1) | verts(1, :) > x_lim(2)...
                     | verts(2, :) < y_lim(1) | verts(2, :) > y_lim(2)...
