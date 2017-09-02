@@ -27,7 +27,7 @@ clc, close all;
 
 % Set structured lighting parameters.
 objDir       = idir;
-calibDir     = sprintf('%s/calib_cam_proj.mat', idir);
+calibDir     = idir;
 objName      = obj_name;   % object name (should correspond to a data dir.)
 % seqName      = 'v1';    % sequence name (subdirectory of object)
 seqType      = 'Gray';  % structured light sequence type ('Gray' or 'bin')
@@ -43,7 +43,10 @@ distReject  = Inf;      % rejection distance (for outlier removal)
 % Part I: Project Grey code sequence to recover illumination plane(s).
 
 % Load calibration data.
-load(calibDir);
+load(sprintf('%s/calib_cam_proj.mat', calibDir));
+if (~exist('Nc', 'var'))
+    slCalib;
+end
 
 % Display prompt to begin scanning.
 clc; disp('[Reconstruction of Structured Light Sequences]');

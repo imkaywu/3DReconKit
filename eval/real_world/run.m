@@ -13,7 +13,7 @@ for oo = 4
     
 obj_name = obj_names{oo};
 
-for aa = 1 : numel(algs)
+for aa = 3 : numel(algs)
 
 switch algs{aa}
 
