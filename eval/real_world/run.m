@@ -14,7 +14,7 @@ for oo = 1 : numel(obj_names)
     
 obj_name = obj_names{oo};
 
-for aa = 4 : numel(algs)
+for aa = 1 : numel(algs)
 
 switch algs{aa}
 
@@ -37,6 +37,7 @@ objName = obj_name;
 if(run_alg || ~exist(sprintf('%s/%s_sl.ply', idir, obj_name), 'file'))
     slProcess;
 end
+rmpath(genpath(fullfile(tdir, 'algo/SL')));
 
 
 %% Run PS
@@ -69,6 +70,7 @@ cdir = sprintf('%s/vh/%s/txt', rdir, obj_name);
 if(run_alg || ~exist(sprintf('%s/models/%s_sc.ply', idir, obj_name), 'file'))
     space_carving_real;
 end
+rmpath(genpath(fullfile(tdir, 'algo/VH')));
 
 end % end of switch statement
 
