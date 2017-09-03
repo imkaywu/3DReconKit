@@ -2,8 +2,8 @@
 % for the test objects
 clear, clc, close all;
 % addpath(genpath(fullfile(fileparts(fileparts(fileparts(mfilename('fullpath')))), 'algo')));
-addpath('../include');
-addpath('../io');
+addpath('../../include');
+addpath('../../io');
 
 obj_names = {'bottle', 'cup', 'king', 'knight'};
 algs = {'ps', 'mvs', 'sl', 'sc', 'ps_baseline'};
@@ -18,18 +18,18 @@ pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data';
 tdir = sprintf('%s/3DRecon_Algo_Eval', pdir);
 ref_dir = sprintf('%s/data/synth/ref_obj', tdir);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-run_alg = 0;
-run_eval = 1;
+run_alg = 1;
+run_eval = 0;
 run_eval_ps = 0;
 use_syn_real = 'SYNTH';
 
 for oo = 1 : numel(obj_names)
 
-for aa = 1 : numel(algs)
+for aa = 2 : numel(algs)
 
-for pp = 1 : size(val_prop, 1)
+for pp = 4 : size(val_prop, 1)
 
-rdir = sprintf('%s/data/synth/%s', tdir, obj_names{oo}, obj_names{oo}); % root directory of the object
+rdir = sprintf('%s/data/synth/%s', tdir, obj_names{oo}); % root directory of the object
 adir = sprintf('%s/%s', rdir, algs{aa}); % root directory of images for algorithm
 
 switch algs{aa}
@@ -43,7 +43,10 @@ start_pmvs;
 cmd = sprintf('pmvs2 %s/ %s', idir, foption);
 wait_for_existence(sprintf('%s/visualize/0040.jpg', idir), 'file', 10, 3600);
 if run_alg || ~exist([idir, '/models/', obj_names{oo}, '_', algs{aa}, '.ply'], 'file')
-    cd(sprintf('%s/algo/MVS/PMVS/bin_x64', tdir)); system(cmd); cd(sprintf('%s/eval/test', tdir));
+    cur_dir = fileparts(mfilename('fullpath'));
+    cd(fullfile(tdir, 'algo/MVS/PMVS/bin_x64'));
+    system(cmd);
+    cd(cur_dir);
 end
 if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
     eval_acc_cmplt;
