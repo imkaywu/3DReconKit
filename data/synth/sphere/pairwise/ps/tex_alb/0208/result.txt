@@ -1,7 +1,0 @@
-mean angle: 4.87129712
-median angle: 4.95390257
-var angle: 2.30985805
-std angle: 1.51982172
-max angle: 8.31576240
-min angle: 0.00000000
-accuracy: 7.24025079
