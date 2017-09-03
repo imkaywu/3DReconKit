@@ -1,17 +1,17 @@
 % training
 clear, clc, close all;
-addpath('../include');
-addpath('../io');
 
 obj_name = 'sphere';
-algs = {'ps', 'mvs', 'sl', 'sc', 'ps_baseline'};
+algs = {'ps', 'mvs', 'sl', 'vh', 'ps_baseline'};
 props = {'tex', 'alb', 'spec', 'rough', 'concav'};
 alg_prop = logical([0, 1, 1, 1, 0; 1, 1, 1, 0, 0; 0, 1, 1, 1, 0]);
 pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
 tdir = sprintf('%s/3DRecon_Algo_Eval', pdir); % root directory of the boolbox
+% for test purpose
+% rdir = sprintf('%s/data/synth/sphere', tdir);
+% actual complete synth_data
 rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
-ref_dir = sprintf('%s/3DRecon_Algo_Eval/algo/PS/ref_obj', pdir);
-% gt_dir = sprintf('%s/groundtruth', pdir);
+ref_dir = sprintf('%s/data/synth/ref_obj', tdir);
 run_alg = 0;
 run_eval = 1;
 run_eval_ps = 0;
@@ -23,57 +23,56 @@ adir = sprintf('%s/%s/train/%s', pdir, obj_name, algs{aa});
 switch algs{aa}
 %% Run MVS
 case 'mvs'
-addpath(genpath('../../algo/MVS'));
+addpath(genpath(fullfile(tdir, 'algo/MVS/PMVS')));
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         for ind_3 = 2 : 3 : 8
         idir = sprintf('%s/%02d%02d%02d00', adir, ind_1, ind_2, ind_3);
-        copyfile(sprintf('%s/algo/MVS/PMVS/copy2mvs', tdir), idir);
         foption = sprintf('%s_%s', obj_name, algs{aa});
-        movefile([idir, '/option'], [idir, '/', foption]);
+        start_pmvs;
         cmd = sprintf('pmvs2 %s/ %s', idir, foption);
         wait_for_existence(sprintf('%s/visualize/0040.jpg', idir), 'file', 10, 3600);
         if run_alg || ~exist(sprintf('%s/models/%s_%s.ply', idir, obj_name, algs{aa}), 'file')
-            cd(sprintf('%s/algo/MVS/PMVS/bin_x64', tdir)); system(cmd); cd(sprintf('%s/eval/train', tdir));
+            cur_dir = fileparts(mfilename('fullpath'));
+            cd(fullfile(tdir, 'algo/MVS/PMVS/bin_x64'));
+            system(cmd);
+            cd(cur_dir);
         end
         if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
             eval_acc_cmplt;
         end
-        rmdir(sprintf('%s/txt/', idir), 's');
-        delete(sprintf('%s/%s', idir, foption));
-        delete(sprintf('%s/vis.dat', idir));
+        end_pmvs;
         end
     end
 end
+rmpath(genpath(fullfile(tdir, 'algo/MVS/PMVS')));
 
 %% Run SL
 case 'sl'
-addpath(genpath('..\..\algo\SL'));
+addpath(genpath(fullfile(tdir, 'algo/SL')));
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         for ind_3 = 2 : 3 : 8
         idir = sprintf('%s/00%02d%02d%02d', adir, ind_1, ind_2, ind_3);
-        objDir = idir; % used in slProcess
-        objName = obj_name;
         wait_for_existence(sprintf('%s/0041.jpg', idir), 'file', 10, 3600);
         if(run_alg || ~exist(sprintf('%s/%s_sl.ply', idir, obj_name), 'file'))
-%             ratio = ((ind_2 - 2) / 10 + 1) * ((ind_3 - 2) / 10 + 1);
-            slProcess;
+            slProcess_synth;
         end
         if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
             eval_acc_cmplt;
-            close all; fig = figure(1);
-            plot3(verts(1, :), verts(2, :), verts(3, :), 'k.'); hold on; plot3(verts_gt(1, :), verts_gt(2, :), verts_gt(3, :), 'r.'); view(0, 90); axis equal;
-            saveas(fig, sprintf('%s/sphere/result/sl_train/sl_00%02d%02d%02d.png', pdir, ind_1, ind_2, ind_3));
-            close(fig);
+%             close all; fig = figure(1);
+%             plot3(verts(1, :), verts(2, :), verts(3, :), 'k.'); hold on; plot3(verts_gt(1, :), verts_gt(2, :), verts_gt(3, :), 'r.'); view(0, 90); axis equal;
+%             saveas(fig, sprintf('%s/sphere/result/sl_train/sl_00%02d%02d%02d.png', pdir, ind_1, ind_2, ind_3));
+%             close(fig);
         end
         end
     end
 end
+rmpath(genpath(fullfile(tdir, 'algo/SL')));
 
 %% Run PS
 case 'ps'
-addpath(genpath('../../algo/PS'));
+addpath(genpath(fullfile(tdir, 'algo/PS/EPS')));
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         for ind_3 = 2 : 3 : 8
@@ -92,22 +91,25 @@ for ind_1 = 2 : 3 : 8
         end
     end
 end
+rmpath(genpath(fullfile(tdir, 'algo/PS/EPS')));
 
 %% Run baseline PS
 case 'ps_baseline'
-    idir = adir;
-    data.idir = idir;
-    data.rdir = rdir;
-    wait_for_existence(sprintf('%s/0024.jpg', idir), 'file', 10, 3600);
-    if(run_alg || ~exist(sprintf('%s/normal.png', idir), 'file'))
-        demoPSBox_baseline;
-    end
-    if(run_eval_ps || ~exist(sprintf('%s/result.txt', idir), 'file'))
-        eval_angle;
-    end
+addpath(genpath(fullfile(tdir, 'algo/PS/PSBox')));
+idir = adir;
+data.idir = idir;
+data.rdir = rdir;
+wait_for_existence(sprintf('%s/0024.jpg', idir), 'file', 10, 3600);
+if(run_alg || ~exist(sprintf('%s/normal.png', idir), 'file'))
+    demoPSBox_baseline;
+end
+if(run_eval_ps || ~exist(sprintf('%s/result.txt', idir), 'file'))
+    eval_angle;
+end
+rmpath(genpath(fullfile(tdir, 'algo/PS/PSBox')));
 
-%% Run VH
-case 'vh'
+%% Run VH (not used, to be deleted)
+case 'empty'
 if(update || ~exist(sprintf('%s/%s_vh.ply', dir, obj_name), 'file'))
     VisualHullMain_syn;
 end
@@ -116,15 +118,17 @@ if(update || ~exist(sprintf('%s/result.txt', dir), 'file'))
 end
 
 %% Run Space carving
-case 'sc'
+case 'vh'
+addpath(genpath(fullfile(tdir, 'algo/VH')));
 idir = sprintf('%s/train/sc', rdir);
-cdir = fullfile(fileparts(fileparts(fileparts(mfilename('fullpath')))), 'algo/CamData');
+cdir = sprintf('%s/groundtruth/calib_results/txt', tdir);
 if(run_alg || ~exist(sprintf('%s/%s_sc.ply', idir, obj_name), 'file'))
     space_carving_syn;
 end
 if (run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
     eval_acc_cmplt;
 end
+rmpath(genpath(fullfile(tdir, 'algo/VH')));
 
 end % end of switch statement
 

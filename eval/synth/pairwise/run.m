@@ -1,21 +1,24 @@
 % pairwise property dependency checking
 clear, clc, close all;
-addpath(genpath('../../'));
 
 obj_name = 'sphere';
 algs = {'ps', 'mvs', 'sl'};
 props = {'tex', 'alb', 'spec', 'rough'};
 pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
-rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
-ref_dir = sprintf('%s/3DRecon_Algo_Eval/algo/PS/ref_obj', pdir);
-% gt_dir = sprintf('%s/groundtruth', pdir);
+tdir = sprintf('%s/3DRecon_Algo_Eval', pdir);
+% for test purpose
+rdir = sprintf('%s/data/synth/sphere', tdir);
+% actual complete synth_data
+% rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
+ref_dir = sprintf('%s/data/synth/ref_obj', tdir);
 run_alg = 1;
-run_eval = 0;
+run_eval = 1;
 run_eval_ps = 1;
+use_syn_real = 'SYNTH';
 
-for aa = 1
+for aa = 3
 
-adir = sprintf('%s/%s/pairwise/%s', pdir, obj_name, algs{aa});
+adir = sprintf('%s/pairwise/%s', rdir, algs{aa});
 
 for ii = 1 : numel(props) - 1
     
@@ -27,38 +30,37 @@ switch algs{aa}
 
 %% Run MVS
 case 'mvs'
+addpath(genpath(fullfile(tdir, 'algo/MVS/PMVS')));
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         idir = sprintf('%s/%s/%02d%02d', adir, prop_pair, ind_1, ind_2);
-        copyfile('../../algo/MVS/PMVS/copy2mvs', idir);
         foption = sprintf('%s_%s', obj_name, algs{aa});
-        movefile(sprintf('%s/option', idir), sprintf('%s/%s', idir, foption));
+        start_pmvs;
         cmd = sprintf('pmvs2 %s/ %s', idir, foption);
         wait_for_existence(sprintf('%s/visualize/0040.jpg', idir), 'file', 10, 3600);
         if run_alg || ~exist(sprintf('%s/models/%s_%s.ply', idir, obj_name, algs{aa}), 'file')
-            cd('../../algo/MVS/PMVS/bin_x64'); system(cmd); cd('../../../../eval/pairwise');
+            cur_dir = fileparts(mfilename('fullpath'));
+            cd(fullfile(tdir, 'algo/MVS/PMVS/bin_x64'));
+            system(cmd);
+            cd(cur_dir);
         end
         if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
             eval_acc_cmplt;
         end
-        rmdir(sprintf('%s/txt/', idir), 's');
-        delete(sprintf('%s/%s', idir, foption));
-        delete(sprintf('%s/vis.dat', idir));
+        end_pmvs;
     end
 end
+rmpath(genpath(fullfile(tdir, 'algo/MVS/PMVS')));
 
 %% Run SL
 case 'sl'
-% dir_sl = 'C:/Users/Admin/Documents/3D_Recon/kwStructuredLight';
-% addpath (genpath(dir_sl));
+addpath(genpath(fullfile(tdir, 'algo/SL')));
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         idir = sprintf('%s/%s/%02d%02d', adir, prop_pair, ind_1, ind_2);
-        objDir = idir;
-        objName = obj_name;
         wait_for_existence(sprintf('%s/0041.jpg', idir), 'file', 10, 3600);
         if(run_alg || ~exist(sprintf('%s/%s_sl.ply', idir, obj_name), 'file'))
-            slProcess;
+            slProcess_synth;
         end
         if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
             eval_acc_cmplt;
@@ -69,11 +71,11 @@ for ind_1 = 2 : 3 : 8
         end
     end
 end
+rmpath(genpath(fullfile(tdir, 'algo/SL')));
 
 %% Run PS
 case 'ps'
-% dir_ps = 'C:/Users/Admin/Documents/3D_Recon/Photometric Stereo';
-% addpath(genpath(dir_ps));
+addpath(genpath(fullfile(tdir, 'algo/PS/EPS')));
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         idir = sprintf('%s/%s/%02d%02d', adir, prop_pair, ind_1, ind_2);
@@ -90,18 +92,7 @@ for ind_1 = 2 : 3 : 8
         end
     end
 end
-
-%% Run VH
-case 'vh'
-% addpath C:\Users\Admin\Documents\3D_Recon\VisualHull;
-% dir = sprintf('%s/vh', rdir);
-file_base = obj_name;
-if(update || ~exist(sprintf('%s/%s_vh.ply', dir, obj_name), 'file'))
-    VisualHullMain_syn;
-end
-if(update || ~exist(sprintf('%s/result.txt', dir), 'file'))
-    eval_acc_cmplt;
-end
+rmpath(genpath(fullfile(tdir, 'algo/PS/EPS')));
 
 end % end of jj
 

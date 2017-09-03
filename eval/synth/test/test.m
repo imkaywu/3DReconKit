@@ -9,9 +9,9 @@ obj_names = {'bottle', 'cup', 'king', 'knight'};
 algs = {'ps', 'mvs', 'sl', 'sc', 'ps_baseline'};
 props = {'tex', 'alb', 'spec', 'rough'}; 
 val_prop = [2, 8, 2, 8; 2, 8, 5, 2; 8, 8, 2, 8; 8, 8, 5, 2];
-pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the toolbox
-tdir = sprintf('%s/3DRecon_Algo_Eval', pdir); % root directory of the toolbox 
-ref_dir = sprintf('%s/3DRecon_Algo_Eval/algo/PS/ref_obj', pdir);
+pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
+tdir = sprintf('%s/3DRecon_Algo_Eval', pdir); % root directory of the toolbox
+ref_dir = sprintf('%s/data/synth/ref_obj', tdir);
 run_alg = 0;
 run_eval = 1;
 run_eval_ps = 0;
@@ -22,18 +22,17 @@ for aa = 1 : numel(algs)
 
 for pp = 1 : size(val_prop, 1)
 
-rdir = sprintf('%s/testing/%s',pdir, obj_names{oo}); % root directory of the object
-adir = sprintf('%s/testing/%s/%s', pdir, obj_names{oo}, algs{aa}); % root directory of images for algorithm
+rdir = sprintf('%s/data/synth/%s', tdir, obj_names{oo}, obj_names{oo}); % root directory of the object
+adir = sprintf('%s/%s', rdir, algs{aa}); % root directory of images for algorithm
 
 switch algs{aa}
 %% Run MVS
 case 'mvs'
-addpath(genpath('../../algo/MVS'));
+addpath(genpath(fullfile(tdir, 'algo/MVS/PMVS')));
 obj_name = obj_names{oo};
 idir = sprintf('%s/%02d%02d%02d%02d', adir, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4));
-copyfile(sprintf('%s/algo/MVS/PMVS/copy2mvs', tdir), idir);
 foption = sprintf('%s_%s', obj_name, algs{aa});
-movefile(sprintf('%s/option', idir), sprintf('%s/%s', idir, foption));
+start_pmvs;
 cmd = sprintf('pmvs2 %s/ %s', idir, foption);
 wait_for_existence(sprintf('%s/visualize/0040.jpg', idir), 'file', 10, 3600);
 if run_alg || ~exist([idir, '/models/', obj_names{oo}, '_', algs{aa}, '.ply'], 'file')
@@ -46,21 +45,18 @@ if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
 %     saveas(fig, sprintf('%s/testing/result/%s_mvs_%02d%02d%02d%02d.png', pdir, obj_name, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4)));
 %     close(fig);
 end
-rmdir(sprintf('%s/txt/', idir), 's');
-delete(sprintf('%s/%s', idir, foption));
-delete(sprintf('%s/vis.dat', idir));
+end_pmvs;
+rmpath(genpath(fullfile(tdir, 'algo/MVS/PMVS')));
 
 %% Run SL
 case 'sl'
-addpath(genpath('../../algo/SL'));
+addpath(genpath(fullfile(tdir, 'algo/SL')));
 idir = sprintf('%s/%02d%02d%02d%02d', adir, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4)); % used in slProcess_syn
-objDir= idir;
-objName = obj_names{oo};
-obj_name = objName;
-alg_type = algs{aa};
+obj_name = obj_names{oo};
+% alg_type = algs{aa};
 wait_for_existence(sprintf('%s/0041.jpg', idir), 'file', 10, 3600);
 if(run_alg || ~exist(sprintf('%s/%s_sl.ply', idir, obj_names{oo}), 'file'))
-    slProcess;
+    slProcess_synth;
 end
 if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
     eval_acc_cmplt;
@@ -69,10 +65,11 @@ if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
 %     saveas(fig, sprintf('%s/testing/result/%s_sl_%02d%02d%02d%02d.png', pdir, obj_name, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4)));
 %     close(fig);
 end
+rmpath(genpath(fullfile(tdir, 'algo/SL')));
 
 %% Run PS
 case 'ps'
-addpath(genpath('../../algo/PS/EPS'));
+addpath(genpath(fullfile(tdir, 'algo/PS/EPS')));
 idir = sprintf('%s/%02d%02d%02d%02d', adir, val_prop(pp, 1), val_prop(pp, 2), val_prop(pp, 3), val_prop(pp, 4));
 data.idir = idir;
 data.rdir = rdir;
@@ -85,10 +82,11 @@ end
 if(run_eval_ps || ~exist(sprintf('%s/result.txt', data.idir), 'file'))
     eval_angle;
 end
+rmpath(genpath(fullfile(tdir, 'algo/PS/EPS')));
 
 %% Run baseline PS
 case 'ps_baseline'
-addpath(genpath('../../algo/ps/PSBox'));
+addpath(genpath(fullfile(tdir, 'algo/PS/PSBox')));
 idir = adir;
 data.rdir = rdir;
 data.idir = adir;
@@ -98,21 +96,21 @@ end
 if(run_eval_ps || ~exist(sprintf('%s/result.txt', data.idir), 'file'))
     eval_angle;
 end
-break;
+rmpath(genpath(fullfile(tdir, 'algo/PS/PSBox')));
 
 %% Run SC
-case 'sc'
-addpath(genpath('../../algo/SC/'));
+case 'vh'
+addpath(genpath(fullfile(tdir, 'algo/VH')));
 idir = adir;
 obj_name = obj_names{oo};
-cdir = sprintf('%s/algo/CamData', tdir);
+cdir = sprintf('%s/groundtruth/calib_results/txt', tdir);
 if(run_alg || ~exist(sprintf('%s/%s_sc.ply', idir, obj_name), 'file'))
     space_carving_syn;
 end
 if (run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
     eval_acc_cmplt;
 end
-break;
+rmpath(genpath(fullfile(tdir, 'algo/VH')));
 
 end % end of switch statement
 
