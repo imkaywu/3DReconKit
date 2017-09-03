@@ -1,16 +1,21 @@
 % pairwise property dependency checking
 clear, clc, close all;
+addpath('../../include');
 
 obj_name = 'sphere';
 algs = {'ps', 'mvs', 'sl'};
 props = {'tex', 'alb', 'spec', 'rough'};
-pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% change the directory if necessary
+% pdir: parent directory of the 3DRecon_Algo_Eval toolbox
+% tdir: root directory of the 3DRecon_Algo_Eval toolbox
+% rdir: root directory of the dataset
+pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data';
 tdir = sprintf('%s/3DRecon_Algo_Eval', pdir);
-% for test purpose
-rdir = sprintf('%s/data/synth/sphere', tdir);
-% actual complete synth_data
-% rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
+rdir = sprintf('%s/%s', pdir, obj_name);
+% rdir = sprintf('%s/data/synth/sphere', tdir); % for test purpose
 ref_dir = sprintf('%s/data/synth/ref_obj', tdir);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 run_alg = 1;
 run_eval = 1;
 run_eval_ps = 1;

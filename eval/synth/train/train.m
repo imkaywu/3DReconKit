@@ -1,22 +1,28 @@
 % training
 clear, clc, close all;
+addpath('../../include');
 
 obj_name = 'sphere';
 algs = {'ps', 'mvs', 'sl', 'vh', 'ps_baseline'};
 props = {'tex', 'alb', 'spec', 'rough', 'concav'};
 alg_prop = logical([0, 1, 1, 1, 0; 1, 1, 1, 0, 0; 0, 1, 1, 1, 0]);
-pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
-tdir = sprintf('%s/3DRecon_Algo_Eval', pdir); % root directory of the boolbox
-% for test purpose
-% rdir = sprintf('%s/data/synth/sphere', tdir);
-% actual complete synth_data
-rdir = sprintf('%s/%s', pdir, obj_name); % root directory of the dataset
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% change the directory if necessary
+% pdir: parent directory of the 3DRecon_Algo_Eval toolbox
+% tdir: root directory of the 3DRecon_Algo_Eval toolbox
+% rdir: root directory of the dataset
+pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data';
+tdir = sprintf('%s/3DRecon_Algo_Eval', pdir);
+rdir = sprintf('%s/%s', pdir, obj_name);
+% rdir = sprintf('%s/data/synth/sphere', tdir); % for test purpose
 ref_dir = sprintf('%s/data/synth/ref_obj', tdir);
-run_alg = 0;
-run_eval = 1;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+run_alg = 1;
+run_eval = 0;
 run_eval_ps = 0;
+use_syn_real = 'SYNTH';
 
-for aa = 3 % 1 : numel(algs)
+for aa = 5 : numel(algs)
 
 adir = sprintf('%s/%s/train/%s', pdir, obj_name, algs{aa});
 
@@ -107,15 +113,6 @@ if(run_eval_ps || ~exist(sprintf('%s/result.txt', idir), 'file'))
     eval_angle;
 end
 rmpath(genpath(fullfile(tdir, 'algo/PS/PSBox')));
-
-%% Run VH (not used, to be deleted)
-case 'empty'
-if(update || ~exist(sprintf('%s/%s_vh.ply', dir, obj_name), 'file'))
-    VisualHullMain_syn;
-end
-if(update || ~exist(sprintf('%s/result.txt', dir), 'file'))
-    eval_acc_cmplt;
-end
 
 %% Run Space carving
 case 'vh'

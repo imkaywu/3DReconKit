@@ -9,12 +9,19 @@ obj_names = {'bottle', 'cup', 'king', 'knight'};
 algs = {'ps', 'mvs', 'sl', 'sc', 'ps_baseline'};
 props = {'tex', 'alb', 'spec', 'rough'}; 
 val_prop = [2, 8, 2, 8; 2, 8, 5, 2; 8, 8, 2, 8; 8, 8, 5, 2];
-pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the 3DRecon_Algo_Eval toolbox
-tdir = sprintf('%s/3DRecon_Algo_Eval', pdir); % root directory of the toolbox
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% change the directory if necessary
+% pdir: parent directory of the 3DRecon_Algo_Eval toolbox
+% tdir: root directory of the 3DRecon_Algo_Eval toolbox
+% rdir: root directory of the dataset
+pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data';
+tdir = sprintf('%s/3DRecon_Algo_Eval', pdir);
 ref_dir = sprintf('%s/data/synth/ref_obj', tdir);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 run_alg = 0;
 run_eval = 1;
 run_eval_ps = 0;
+use_syn_real = 'SYNTH';
 
 for oo = 1 : numel(obj_names)
 
