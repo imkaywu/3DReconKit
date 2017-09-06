@@ -29,6 +29,7 @@ axis off;
 % <http://www.mathworks.com/access/helpdesk/help/toolbox/images/bwareaopen.html |bwareaopen|>
 % and <http://www.mathworks.com/access/helpdesk/help/toolbox/images/imclose.html |imclose|>
 % are your friends for this job!
+figure;
 for c=1:numel(cameras)
     cameras(c).Silhouette = chromakey( cameras(c).Image );
 end

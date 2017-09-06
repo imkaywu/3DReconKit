@@ -7,6 +7,7 @@ mask_tar_ind = find(mask_tar);
 mask_reso = numel(mask_tar);
 img_tar = imread(data.name_img_tar{1});
 
+normals(3, normals(3, :) < 1e-8) = 1;
 norm_map = zeros(size(mask_tar, 1), size(mask_tar, 2), 3);
 norm_map(mask_tar_ind + mask_reso * 0) = normals(1, :);
 norm_map(mask_tar_ind + mask_reso * 1) = normals(2, :);
@@ -21,7 +22,7 @@ imwrite(norm_map_rgb, sprintf('%s/normal.png', data.idir));
 clear norm_map_rgb;
 
 % integrate the normal to get the surface
-DfG = 0; % depth from gradients
+DfG = 1; % depth from gradients
 if DfG
 % solution 1: solving a sparse system of linear equations
 % h_tar_map = compute_heightMap(norm_map, mask_tar);
@@ -34,7 +35,7 @@ if DfG
 % n_y = norm_map(:, :, 2) ./ n_z;
 % h_tar_map = integrate_horn2(n_x, n_y, double(mask_tar), 100000, 1);
 
-% solution 3: 
+% solution 3:
 p = -norm_map(:,:,1) ./ norm_map(:,:,3);
 q = -norm_map(:,:,2) ./ norm_map(:,:,3);
 p(isnan(p)) = 0;
@@ -42,7 +43,7 @@ q(isnan(q)) = 0;
 h_tar_map = DepthFromGradient(p, q);
 % Visualize depth map.
 figure;
-h_tar_map(isnan(n(:,:,1)) | isnan(n(:,:,2)) | isnan(n(:,:,3))) = NaN;
+h_tar_map(isnan(norm_map(:,:,1)) | isnan(norm_map(:,:,2)) | isnan(norm_map(:,:,3))) = NaN;
 surf(h_tar_map, 'EdgeColor', 'None', 'FaceColor', [0.5 0.5 0.5]);
 axis equal; camlight;
 view(-75, 30);

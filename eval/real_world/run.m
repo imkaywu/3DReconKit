@@ -1,7 +1,7 @@
 % pairwise property dependency checking
 clear, clc, close all;
 
-obj_names = {'box', 'cat0', 'cat1', 'cup', 'dino', 'house', 'pot', 'statue', 'vase'};
+obj_names = {'bottle', 'box', 'cat0', 'cat1', 'cup', 'dino', 'house', 'pot', 'statue', 'vase'};
 algs = {'ps', 'mvs', 'sl', 'vh'};
 pdir = 'C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data'; % parent directory of the toolbox 3DRecon_Algo_Eval toolbox
 tdir = sprintf('%s/3DRecon_Algo_Eval', pdir); % root directory of the toolbox 3DRecon_Algo_Eval toolbox
@@ -9,11 +9,11 @@ rdir = sprintf('%s/3DRecon_Algo_Eval/data/real', pdir); % root directory of the 
 run_alg = 1;
 use_syn_real = 'REAL';
 
-for oo = 4
+for oo = 1
     
 obj_name = obj_names{oo};
 
-for aa = 3 : numel(algs)
+for aa = 1 : numel(algs)
 
 switch algs{aa}
 

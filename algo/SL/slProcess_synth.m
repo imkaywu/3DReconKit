@@ -29,8 +29,8 @@ objName      = obj_name;   % object name (should correspond to a data dir.)
 seqType      = 'Gray';  % structured light sequence type ('Gray' or 'bin')
 dSampleProj  = 1;       % downsampling factor (i.e., min. system resolution)
 projValue    = 255;     % Gray code intensity
-minContrast  = 0.1;     % minimum contrast threshold (for Gray code pattern)
-maxContrast  = 0.8;
+minContrast  = 0.2;     % minimum contrast threshold (for Gray code pattern)
+maxContrast  = 0.2;
 % switch ind_1
 %     case 2
 %         maxContrast = 0.9;
@@ -146,11 +146,10 @@ for k = 1:nCam
                        
          % Eliminate all pixels that do not exceed contrast threshold.
          grayAB = abs(grayA - grayB);
-         grayAB_thresh = prctile(grayAB(:), prct);
-         grayAB = grayAB ./ grayAB_thresh .* grayContrast_thresh;
-%          M{j,k}(grayAB > projValue * minContrast) = true;
-%          M{j,k}(grayAB > 0.95 * grayContrast & grayAB < 1.05 * grayContrast) = true;
-         M{j,k}(grayAB > maxContrast * grayContrast_thresh) = true;
+%          grayAB_thresh = prctile(grayAB(:), prct);
+%          grayAB = grayAB ./ grayAB_thresh .* grayContrast_thresh;
+%          M{j,k}(grayAB > maxContrast * grayContrast_thresh) = true;
+         M{j,k}(grayAB > minContrast * projValue) = true;
          imshow(M{j,k});
          
          % Estimate current bit of Gray code from image pair.
@@ -262,7 +261,7 @@ for i = 1:length(Nc)
    % transform to world coordinate system
    tmp = Rc_1_cam{i}' * (vertices{i}(idx{i}, :)' - repmat(Tc_1_cam{i}, 1, numel(idx{i})));
    tmp = tmp';
-   writePly([objDir, '/', objName, '_', algs{aa}, '.ply'], tmp(:,[1 2 3]),colors{i}(idx{i},:));
+   write_rly([objDir, '/', objName, '_', algs{aa}, '.ply'], tmp(:,[1 2 3]),colors{i}(idx{i},:));
    
 %    vertices{i}(:,2) = -vertices{i}(:,2);
 %    writePly([objDir, '/', objName, '_', algs{aa}, '.ply'], vertices{i}(idx{i},[1 2 3]),colors{i}(idx{i},:));
