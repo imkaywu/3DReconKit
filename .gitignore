@@ -1,8 +1,10 @@
+*.ply
+*.txt
 *.blend1
 *.asv
 /old
 /data/real/cup/sl/calib_cam_proj_origin.mat
 /algo/TO-BE-DELETED
 /eval/TO-BE-DELETED
-/groundtruth/TO-BE-DELETED
+/calib/TO-BE-DELETED
 /data/synth/ref_obj/old_ref

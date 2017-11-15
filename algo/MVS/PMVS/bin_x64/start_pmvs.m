@@ -1,5 +1,5 @@
 % copy the camera calib to the image dir
-copyfile(sprintf('%s/groundtruth/calib_results/txt', tdir), sprintf('%s/txt', idir));
+copyfile(sprintf('%s/calib/results/txt', tdir), sprintf('%s/txt', idir));
 
 % generate the option file
 genOption;

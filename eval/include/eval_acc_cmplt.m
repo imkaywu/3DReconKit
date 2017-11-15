@@ -11,7 +11,7 @@ if strcmp(obj_name, 'sphere')
     z_lim = [min(verts_gt(3, :)) - d_tor, max(verts_gt(3, :)) + d_tor];
 else
 
-switch algs{aa}
+switch algos{aa}
     case 'mvs'
         [verts_gt, ~, ~] = ply_read_vnf(sprintf('%s/gt/mvs.ply', rdir));
     case 'sc'
@@ -30,18 +30,18 @@ end
 nverts_gt = size(verts_gt, 2);
 
 % read recon
-switch algs{aa}
+switch algos{aa}
     case 'mvs'
-        [verts, ~, ~] = ply_read_vnc(sprintf('%s/models/%s_%s.ply', idir, obj_name, algs{aa}));
+        [verts, ~, ~] = ply_read_vnc(sprintf('%s/models/%s_%s.ply', idir, obj_name, algos{aa}));
         ind_rm = find(verts(1, :) < x_lim(1) | verts(1, :) > x_lim(2)...
                     | verts(2, :) < y_lim(1) | verts(2, :) > y_lim(2)...
                     | verts(3, :) < z_lim(1) | verts(3, :) > z_lim(2));
         verts(:, ind_rm) = [];
         d_thre = 0.03;
     case 'sl'
-        load C:/Users/Admin/Documents/3D_Recon/Data/synthetic_data/3DRecon_Algo_Eval/groundtruth/calib_results/calib_cam_proj.mat Rc_1_cam Tc_1_cam
-        [verts, ~] = ply_read_vc(sprintf('%s/%s_%s.ply', idir, objName, algs{aa})); % wtf
-%         verts = Rc_1_cam{1}' * (verts - repmat(Tc_1_cam{1}, 1, size(verts, 2)));
+        load(sprintf('%s/calib/results/calib_cam_proj.mat', tdir), 'Rc_1_cam', 'Tc_1_cam');
+        [verts, ~] = ply_read_vc(sprintf('%s/%s_%s.ply', idir, obj_name, algos{aa}));
+        verts = Rc_1_cam{1}' * (verts - repmat(Tc_1_cam{1}, 1, size(verts, 2))); % needed for SYNTH
         ind_rm = find(verts(1, :) < x_lim(1) | verts(1, :) > x_lim(2)...
                     | verts(2, :) < y_lim(1) | verts(2, :) > y_lim(2)...
                     | verts(3, :) < z_lim(1) | verts(3, :) > z_lim(2));
@@ -49,9 +49,9 @@ switch algs{aa}
         dsample = 10;
         verts = verts(:, 1 : dsample : size(verts, 2));
         d_thre = 0.03;
+%     case 'vh'
+%         [verts, ~] = ply_read_vf(sprintf('%s/%s_vh.ply', idir, obj_name));
     case 'vh'
-        [verts, ~] = ply_read_vf(sprintf('%s/%s_vh.ply', idir, obj_name));
-    case 'sc'
         [verts, ~, ~] = ply_read_vnc(sprintf('%s/%s_sc.ply', idir, obj_name));
         ind_rm = find(verts(1, :) < x_lim(1) | verts(1, :) > x_lim(2)...
                     | verts(2, :) < y_lim(1) | verts(2, :) > y_lim(2)...
@@ -89,7 +89,7 @@ fprintf('completeness(%.4f): %.08f\n', d_thre, completeness);
 
 subplot(1, 2, 2); plot3(verts(1, :), verts(2, :), verts(3, :), 'k.'); hold on;plot3(verts_gt(1, ind), verts_gt(2, ind), verts_gt(3, ind), 'r.'); axis equal; hold off;
 %% write to file
-switch algs{aa}
+switch algos{aa}
     case 'mvs'
         fid = fopen([idir, '/result.txt'], 'wt');
     case 'sl'

@@ -1,7 +1,7 @@
-% addpath(genpath('C:\Users\Admin\Documents\3D_Recon\Photometric Stereo'));
-mask = imread(sprintf('%s/gt/mask.bmp', data.rdir));
+addpath(fullfile(tdir, 'algo/PS/include'));
+mask = imread(sprintf('%s/mask.bmp', data.mdir));
 mask(mask > 0) = 1;
-norm_map_rgb_gt = imread(sprintf('%s/gt/ps.png', data.rdir));
+norm_map_rgb_gt = imread(sprintf('%s/ps.png', data.mdir));
 norm_map_gt = decode(norm_map_rgb_gt, mask);
 % show_surfNorm(255 * mask, norm_map_gt, 10);
 
@@ -56,3 +56,5 @@ if(update_txt || ~exist([data.idir, '/result.txt'], 'file'))
     fprintf(fid, 'mean angle: %.08f\nmedian angle: %.08f\nvar angle: %.08f\nstd angle: %.08f\nmax angle: %.08f\nmin angle: %.08f\naccuracy: %.08f\n', mean_ang, median_ang, var_ang, std_ang, max_ang, min_ang, acc_ang);
     fclose(fid);
 end
+
+rmpath(fullfile(tdir, 'algo/PS/include'));
