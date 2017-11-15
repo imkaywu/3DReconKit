@@ -1,5 +1,5 @@
 # 3DRecon Toolkit
-3D reconstruction toolkit, include a complete pipeline to run various 3D vision algorithms, and generate graphs for evaluation purposes.
+3D reconstruction toolkit, including a complete pipeline to run various 3D vision algorithms, and generate graphs for evaluation purposes.
 
 ## Algorithms
 * PMVS: patch-based Multi-view Stereo
