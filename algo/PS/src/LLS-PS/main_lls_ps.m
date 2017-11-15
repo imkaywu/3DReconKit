@@ -8,7 +8,6 @@ rng(0);
 %% Setup parameters.
 % Change the 'topDir' to your local data directory.
 topDir = fullfile(fileparts(mfilename('fullpath')), 'data');
-gt_dir = sprintf('%s/calib/results', tdir); % tdir: root directory of the toolbox
 % The format of output (decoded) RAW images.
 rawOutSuffix = 'jpg';
 % The image channel used to perform photometric stereo.
@@ -20,7 +19,7 @@ shadowThresh = 0.1;
 
 fprintf('Loading data...\n');
 % Load lighting directions.
-L = textread(fullfile(gt_dir, 'light_directions.txt'));
+L = textread(fullfile(calib_dir, 'light_directions.txt'));
 % Load images.
 loadOpts = struct('ImageChannel', imgChannel, ...
                   'NormalizePercentile', 99);
