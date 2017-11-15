@@ -1,13 +1,13 @@
 % training
 clear, clc, close all;
 addpath(fileparts(fileparts(fileparts(mfilename('fullpath')))));
+use_syn_real = 'SYNTH'; % choose between REAL and SYNTH
 set_path;
 
 obj_name = 'sphere';
 algos = {'ps', 'mvs', 'sl', 'vh'};
 run_alg = 0;
 run_eval = 0;
-use_syn_real = 'SYNTH';
 
 for aa = 1 : numel(algos)
 
@@ -21,6 +21,7 @@ for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         for ind_3 = 2 : 3 : 8
         idir = sprintf('%s/%02d%02d%02d00', adir, ind_1, ind_2, ind_3);
+        nimgs = num_of_imgs(sprintf('%s/visualize', idir));
         foption = sprintf('%s_%s', obj_name, algos{aa});
         start_pmvs;
         cmd = sprintf('pmvs2 %s/ %s', idir, foption);
@@ -38,6 +39,7 @@ for ind_1 = 2 : 3 : 8
         end
     end
 end
+clear nimgs;
 rmpath(genpath(fullfile(tdir, 'algo/MVS/PMVS')));
 
 %% Run SL
@@ -94,20 +96,6 @@ if (run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
     eval_acc_cmplt;
 end
 rmpath(genpath(fullfile(tdir, 'algo/VH')));
-
-%% Run baseline PS (not run)
-case 'ps_baseline'
-addpath(genpath(fullfile(tdir, 'algo/PS/src/LLS-PS')));
-idir = adir;
-mdir = sprintf('%s/eval_algo/gt', rdir);
-wait_for_existence(sprintf('%s/0024.jpg', idir), 'file', 10, 3600);
-if(run_alg || ~exist(sprintf('%s/normal.png', idir), 'file'))
-    main_lls_ps;
-end
-if(run_eval || ~exist(sprintf('%s/result.txt', idir), 'file'))
-    eval_angle;
-end
-rmpath(genpath(fullfile(tdir, 'algo/PS/src/LLS-PS')));
 
 end % end of switch statement
 

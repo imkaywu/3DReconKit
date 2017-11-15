@@ -12,6 +12,6 @@ fprintf(fid, 'useVisData %d\n', 0);
 fprintf(fid, 'sequence %d\n', -1);
 fprintf(fid, 'maxAngle %d\n', 10);
 fprintf(fid, 'quad %0.1f\n', 2.0);
-fprintf(fid, 'timages %d %d %d\n', -1, 0, 41);
+fprintf(fid, 'timages %d %d %d\n', -1, 0, nimgs);
 fprintf(fid, 'oimages %d\n', 0);
 fclose(fid);

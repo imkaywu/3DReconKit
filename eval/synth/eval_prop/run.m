@@ -1,6 +1,7 @@
 % study the main effect of each property or interaction effect of each pair of properties 
 clear, clc, close all;
 addpath(fileparts(fileparts(fileparts(mfilename('fullpath')))));
+use_syn_real = 'SYNTH'; % choose between REAL and SYNTH
 set_path;
 
 obj_name = 'sphere';
@@ -8,7 +9,6 @@ algos = {'ps', 'mvs', 'sl'};
 props = {'tex', 'alb', 'spec', 'rough'};
 run_algo = 0;
 run_eval = 0;
-use_syn_real = 'SYNTH'; % choose between REAL and SYNTH
 
 for aa = 1 : numel(algos)
 
@@ -28,6 +28,7 @@ addpath(genpath(fullfile(tdir, 'algo/MVS/PMVS')));
 for ind_1 = 2 : 3 : 8
     for ind_2 = 2 : 3 : 8
         idir = sprintf('%s/%s/%02d%02d', adir, prop_pair, ind_1, ind_2);
+        nimgs = num_of_imgs(sprintf('%s/visualize', idir));
         foption = sprintf('%s_%s', obj_name, algos{aa});
         start_pmvs;
         cmd = sprintf('pmvs2 %s/ %s', idir, foption);
@@ -44,6 +45,7 @@ for ind_1 = 2 : 3 : 8
         end_pmvs;
     end
 end
+clear nimgs;
 rmpath(genpath(fullfile(tdir, 'algo/MVS/PMVS')));
 
 %% Run SL

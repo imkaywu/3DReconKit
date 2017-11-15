@@ -10,9 +10,8 @@ use_syn_real = 'SYNTH';
 
 for oo = 1 : numel(obj_names)
 
-for aa = 5 : numel(algos)
+for aa = 1 : numel(algos)
 
-% rdir = sprintf('%s/synth/%s', pdir, obj_names{oo}); % root directory of the object
 adir = sprintf('%s/eval_interp/%s/%s', rdir, obj_names{oo}, algos{aa}); % root directory of images for algorithm
 
 switch algos{aa}

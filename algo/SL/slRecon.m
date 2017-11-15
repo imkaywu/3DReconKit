@@ -16,8 +16,12 @@ clc, close all;
 % Set structured lighting parameters.
 % obj_name     = 'beethovan';    % object name
 data_dir     = idir;
-data_fmt     = 'jpg'; % change the format of image as needed
-calib_dir    = sprintf('%s/calib/results/calib_cam_proj', tdir);
+if (strcmpi(use_syn_real, 'SYNTH')) % change the format of image as needed
+    data_fmt = 'jpg';
+else
+    data_fmt = 'bmp';
+end
+calib_file   = sprintf('%s/calib_cam_proj.mat', calib_dir);
 seq_type     = 'Gray';   % structured light sequence type ('Gray' or 'bin')
 minContrast  = 0.2;
 maxContrast  = 0.5;
@@ -39,7 +43,7 @@ is_vis = false;
 % Part I: Decode Grey code sequence to recover illumination plane(s).
 
 % Load calibration data.
-load(calib_dir);
+load(calib_file);
 if (~exist('Nc', 'var'))
     slCalib;
 end
