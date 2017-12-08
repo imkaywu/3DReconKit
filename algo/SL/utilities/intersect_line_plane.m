@@ -1,4 +1,4 @@
-function [p,t] = intersectLineWithPlane(q,v,w)
+function [p,t] = intersect_line_plane(q,v,w)
 
 % INTERSECTLINES Find intersection of a line with a plane.
 %    [P,T] = INTERSECTLINEWITHPLANE(Q,V,W) finds the point of intersection

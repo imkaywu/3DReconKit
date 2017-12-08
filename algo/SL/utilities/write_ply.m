@@ -1,4 +1,4 @@
-function writePly(fname, v_map, c_map)
+function write_ply(fname, v_map, c_map)
 
 num_pts = size(v_map, 1);
 c_map = double(255 * c_map);

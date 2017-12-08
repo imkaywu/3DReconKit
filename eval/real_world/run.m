@@ -8,7 +8,7 @@ obj_names = {'bottle', 'box', 'cat0', 'cat1', 'cup', 'dino', 'house', 'pot', 'st
 algos = {'ps', 'mvs', 'sl', 'vh'};
 run_algo = 1;
 
-for oo = 5
+for oo = 10
     
 obj_name = obj_names{oo};
 
