@@ -1,5 +1,5 @@
 # 3DRecon Toolkit
-3D reconstruction toolkit, including a complete pipeline to run various 3D vision algorithms, and generate graphs for evaluation purposes. The documentation can be found [here](https://imkaywu/3drecon_dataset/software).
+3D reconstruction toolkit, including a complete pipeline to run various 3D vision algorithms, and generate graphs for evaluation purposes. The documentation can be found [here](https://imkaywu.github.io/3drecon_dataset/software).
 
 ## Dependencies
 * MATLAB
@@ -13,9 +13,9 @@ cd 3DReconKit
 ```
 
 ## Dataset
-The real-world dataset can be downloaded in the [Dataset](https://imkaywu/3drecon_dataset/dataset) page of the [official website](https://imkaywu/3drecon_dataset).
+The real-world dataset can be downloaded in the [Dataset](https://imkaywu.github.io/3drecon_dataset/dataset) page of the [official website](https://imkaywu.github.io/3drecon_dataset).
 
-The synthetic dataset can be generated using the [blender projects and scripts]().
+The synthetic dataset can be generated using the [blender projects and scripts](https://github.com/imkaywu/3d-data-generator).
 
 ## Algorithms
 | Algo Class |  Algo  | Summary  | Source code |
