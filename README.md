@@ -1,5 +1,8 @@
 # 3DRecon Toolkit
-3D reconstruction toolkit, including a complete pipeline to run various 3D vision algorithms, and generate graphs for evaluation purposes. The documentation can be found [here](https://imkaywu.github.io/3drecon_dataset/software).
+3D reconstruction toolkit, including a complete pipeline to run various 3D vision algorithms, and generate graphs for evaluation purposes. For more details, please visit the [official website](https://imkaywu.github.io/3drecon_dataset/software). 
+
+## For WACV reviewers
+All information linked to my identity have been removed from the [official website](https://imkaywu.github.io/3drecon_dataset/software). I also removed personal information on my Github account. Please stay within the [official website](https://imkaywu.github.io/3drecon_dataset/software), otherwise you could come across other Github sites that could reveal my indentity.
 
 ## Dependencies
 * MATLAB
